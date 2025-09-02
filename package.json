@@ -1,0 +1,62 @@
+{
+  "name": "hugsy-plugins",
+  "version": "0.0.1",
+  "description": "🔌 Official plugin ecosystem for Hugsy - Configuration management for Claude Code",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "type-check": "turbo run type-check",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage",
+    "test:integration": "pnpm build && vitest run tests/",
+    "test:unit": "vitest run packages/",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,md,json,yml,yaml}\"",
+    "changeset": "changeset",
+    "version": "changeset version && pnpm install --lockfile-only",
+    "release": "turbo build && changeset publish",
+    "publish:ci": "changeset publish",
+    "version:packages": "changeset version && pnpm install --lockfile-only"
+  },
+  "keywords": [
+    "hugsy",
+    "plugins",
+    "claude",
+    "ai",
+    "configuration",
+    "automation",
+    "development-tools"
+  ],
+  "author": "Hugsy Contributors",
+  "license": "MIT",
+  "homepage": "https://github.com/HugsyLab/hugsy-plugins",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HugsyLab/hugsy-plugins.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HugsyLab/hugsy-plugins/issues"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "@eslint/js": "^9.34.0",
+    "@types/node": "^20.19.11",
+    "@typescript-eslint/eslint-plugin": "^8.41.0",
+    "@typescript-eslint/parser": "^8.41.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "eslint": "^9.18.0",
+    "globals": "^16.3.0",
+    "prettier": "^3.5.0",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.3",
+    "vitest": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.6"
+}

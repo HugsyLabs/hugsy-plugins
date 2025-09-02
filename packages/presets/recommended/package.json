@@ -1,0 +1,39 @@
+{
+  "name": "@hugsy/preset-recommended",
+  "version": "0.0.1",
+  "description": "Recommended preset for Hugsy - balanced configuration for most projects",
+  "type": "module",
+  "main": "index.json",
+  "exports": {
+    ".": "./index.json"
+  },
+  "files": [
+    "index.json",
+    "README.md"
+  ],
+  "keywords": [
+    "hugsy",
+    "preset",
+    "recommended",
+    "default",
+    "balanced",
+    "claude-code"
+  ],
+  "author": "Hugsy Contributors",
+  "license": "MIT",
+  "homepage": "https://github.com/HugsyLab/hugsy-plugins/tree/main/packages/presets/recommended",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HugsyLab/hugsy-plugins.git",
+    "directory": "packages/presets/recommended"
+  },
+  "bugs": {
+    "url": "https://github.com/HugsyLab/hugsy-plugins/issues"
+  },
+  "peerDependencies": {
+    "@hugsylabs/hugsy": ">=0.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

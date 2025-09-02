@@ -1,0 +1,42 @@
+{
+  "name": "@hugsy/commands-dev",
+  "version": "0.0.1",
+  "description": "Development slash commands for Hugsy - productivity commands for Claude Code",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "scripts": {
+    "lint": "eslint index.js"
+  },
+  "files": [
+    "index.js",
+    "README.md"
+  ],
+  "keywords": [
+    "hugsy",
+    "commands",
+    "slash-commands",
+    "development",
+    "productivity",
+    "claude-code"
+  ],
+  "author": "Hugsy Contributors",
+  "license": "MIT",
+  "homepage": "https://github.com/HugsyLab/hugsy-plugins/tree/main/packages/commands/dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HugsyLab/hugsy-plugins.git",
+    "directory": "packages/commands/dev"
+  },
+  "bugs": {
+    "url": "https://github.com/HugsyLab/hugsy-plugins/issues"
+  },
+  "peerDependencies": {
+    "@hugsylabs/hugsy": ">=0.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "name": "@hugsy/plugin-typescript",
+  "version": "0.0.1",
+  "description": "TypeScript development support for Hugsy - type checking and compilation",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "scripts": {
+    "lint": "eslint index.js",
+    "test": "vitest run"
+  },
+  "files": [
+    "index.js",
+    "README.md"
+  ],
+  "keywords": [
+    "hugsy",
+    "plugin",
+    "typescript",
+    "type-checking",
+    "tsc",
+    "claude-code"
+  ],
+  "author": "Hugsy Contributors",
+  "license": "MIT",
+  "homepage": "https://github.com/HugsyLab/hugsy-plugins/tree/main/packages/plugins/typescript",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HugsyLab/hugsy-plugins.git",
+    "directory": "packages/plugins/typescript"
+  },
+  "bugs": {
+    "url": "https://github.com/HugsyLab/hugsy-plugins/issues"
+  },
+  "peerDependencies": {
+    "@hugsylabs/hugsy": ">=0.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

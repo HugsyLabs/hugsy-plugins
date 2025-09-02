@@ -1,0 +1,52 @@
+{
+  "name": "recommended",
+  "version": "0.0.1",
+  "description": "Recommended configuration for most projects",
+  "plugins": [
+    "@hugsy/plugin-git",
+    "@hugsy/plugin-node",
+    "@hugsy/plugin-typescript",
+    "@hugsy/plugin-test",
+    "@hugsy/plugin-security"
+  ],
+  "slashCommands": {
+    "packages": ["@hugsy/commands-dev"]
+  },
+  "env": {
+    "NODE_ENV": "development",
+    "DEBUG": "false"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(ls)",
+      "Bash(ls *)",
+      "Bash(pwd)",
+      "Bash(cd *)",
+      "Bash(echo *)",
+      "Bash(cat *)",
+      "Bash(grep *)",
+      "Bash(find * -name *)",
+      "Bash(which *)",
+      "Bash(npm run *)",
+      "Bash(yarn run *)",
+      "Bash(pnpm run *)",
+      "Read(**)",
+      "Write(**)",
+      "Edit(**)"
+    ],
+    "ask": ["Bash(sudo *)", "Bash(rm *)", "Bash(mv *)", "Bash(cp -r *)"],
+    "deny": []
+  },
+  "hooks": {
+    "PostSessionEnd": [
+      {
+        "command": "echo \"👋 Session ended. Remember to commit your changes if needed.\""
+      }
+    ],
+    "PreSessionStart": [
+      {
+        "command": "echo \"🚀 Starting Claude Code session with recommended preset\""
+      }
+    ]
+  }
+}
