@@ -2,7 +2,7 @@
 
 Official plugin ecosystem for [Hugsy](https://github.com/HugsyLab/hugsy) - Configuration management for Claude Code.
 
-[![CI](https://github.com/HugsyLab/hugsy-plugins/actions/workflows/ci.yml/badge.svg)](https://github.com/HugsyLab/hugsy-plugins/actions/workflows/ci.yml)
+[![CI](https://github.com/HugsyLabs/hugsy-plugins/actions/workflows/ci.yml/badge.svg)](https://github.com/HugsyLabs/hugsy-plugins/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## 📦 Available Packages
