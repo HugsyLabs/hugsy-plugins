@@ -11,38 +11,38 @@ Official plugin ecosystem for [Hugsy](https://github.com/HugsyLab/hugsy) - Confi
 
 | Package                                             | Description                 | Version                                                   |
 | --------------------------------------------------- | --------------------------- | --------------------------------------------------------- |
-| [`@hugsy/plugin-python`](./packages/plugins/python) | Python development support  | ![npm](https://img.shields.io/npm/v/@hugsy/plugin-python) |
-| [`@hugsy/plugin-node`](./packages/plugins/node)     | Node.js development support | ![npm](https://img.shields.io/npm/v/@hugsy/plugin-node)   |
-| `@hugsy/plugin-typescript`                          | TypeScript support          | Coming soon                                               |
-| `@hugsy/plugin-java`                                | Java development support    | Coming soon                                               |
-| `@hugsy/plugin-go`                                  | Go development support      | Coming soon                                               |
+| [`@hugsylabs/plugin-python`](./packages/plugins/python) | Python development support  | ![npm](https://img.shields.io/npm/v/@hugsylabs/plugin-python) |
+| [`@hugsylabs/plugin-node`](./packages/plugins/node)     | Node.js development support | ![npm](https://img.shields.io/npm/v/@hugsylabs/plugin-node)   |
+| [`@hugsylabs/plugin-typescript`](./packages/plugins/typescript) | TypeScript support          | ![npm](https://img.shields.io/npm/v/@hugsylabs/plugin-typescript) |
+| `@hugsylabs/plugin-java`                                | Java development support    | Coming soon                                               |
+| `@hugsylabs/plugin-go`                                  | Go development support      | Coming soon                                               |
 
 ### Command Plugins
 
 | Package                                          | Description                    | Version                                                  |
 | ------------------------------------------------ | ------------------------------ | -------------------------------------------------------- |
-| [`@hugsy/commands-dev`](./packages/commands/dev) | Essential development commands | ![npm](https://img.shields.io/npm/v/@hugsy/commands-dev) |
-| `@hugsy/commands-test`                           | Testing commands               | Coming soon                                              |
-| `@hugsy/commands-git`                            | Git workflow commands          | Coming soon                                              |
-| `@hugsy/commands-refactor`                       | Refactoring commands           | Coming soon                                              |
+| [`@hugsylabs/commands-dev`](./packages/commands/dev) | Essential development commands | ![npm](https://img.shields.io/npm/v/@hugsylabs/commands-dev) |
+| `@hugsylabs/commands-test`                           | Testing commands               | Coming soon                                              |
+| `@hugsylabs/commands-git`                            | Git workflow commands          | Coming soon                                              |
+| `@hugsylabs/commands-refactor`                       | Refactoring commands           | Coming soon                                              |
 
 ### Feature Plugins
 
 | Package                  | Description     | Version     |
 | ------------------------ | --------------- | ----------- |
-| `@hugsy/plugin-git`      | Git integration | Coming soon |
-| `@hugsy/plugin-test`     | Test automation | Coming soon |
-| `@hugsy/plugin-security` | Security tools  | Coming soon |
-| `@hugsy/plugin-docker`   | Docker support  | Coming soon |
+| [`@hugsylabs/plugin-git`](./packages/plugins/git)      | Git integration | ![npm](https://img.shields.io/npm/v/@hugsylabs/plugin-git) |
+| [`@hugsylabs/plugin-test`](./packages/plugins/test)     | Test automation | ![npm](https://img.shields.io/npm/v/@hugsylabs/plugin-test) |
+| [`@hugsylabs/plugin-security`](./packages/plugins/security) | Security tools  | ![npm](https://img.shields.io/npm/v/@hugsylabs/plugin-security) |
+| [`@hugsylabs/plugin-docker`](./packages/plugins/docker)   | Docker support  | ![npm](https://img.shields.io/npm/v/@hugsylabs/plugin-docker) |
 
 ### Presets
 
 | Package                     | Description            | Version     |
 | --------------------------- | ---------------------- | ----------- |
-| `@hugsy/preset-recommended` | Recommended setup      | Coming soon |
-| `@hugsy/preset-frontend`    | Frontend development   | Coming soon |
-| `@hugsy/preset-backend`     | Backend development    | Coming soon |
-| `@hugsy/preset-fullstack`   | Full-stack development | Coming soon |
+| [`@hugsylabs/preset-recommended`](./packages/presets/recommended) | Recommended setup      | ![npm](https://img.shields.io/npm/v/@hugsylabs/preset-recommended) |
+| `@hugsylabs/preset-frontend`    | Frontend development   | Coming soon |
+| `@hugsylabs/preset-backend`     | Backend development    | Coming soon |
+| `@hugsylabs/preset-fullstack`   | Full-stack development | Coming soon |
 
 ## 🚀 Quick Start
 
@@ -52,14 +52,14 @@ Install the plugins you need:
 
 ```bash
 # Language support
-npm install -D @hugsy/plugin-python
-npm install -D @hugsy/plugin-node
+npm install @hugsylabs/plugin-python
+npm install @hugsylabs/plugin-node
 
 # Commands
-npm install -D @hugsy/commands-dev
+npm install @hugsylabs/commands-dev
 
 # Or use a preset
-npm install -D @hugsy/preset-recommended
+npm install @hugsylabs/preset-recommended
 ```
 
 ### Configuration
@@ -69,7 +69,7 @@ Add plugins to your `.hugsyrc.json`:
 ```json
 {
   "extends": "@hugsylabs/hugsy-compiler/presets/development",
-  "plugins": ["@hugsy/plugin-python", "@hugsy/plugin-node", "@hugsy/commands-dev"]
+  "plugins": ["@hugsylabs/plugin-python", "@hugsylabs/plugin-node", "@hugsylabs/commands-dev"]
 }
 ```
 
@@ -77,7 +77,7 @@ Or use a preset:
 
 ```json
 {
-  "extends": "@hugsy/preset-frontend"
+  "extends": "@hugsylabs/preset-frontend"
 }
 ```
 
@@ -100,10 +100,10 @@ Hugsy plugins extend Claude Code's capabilities by modifying its configuration d
 
 ### Plugin Types
 
-1. **Language Plugins** (`@hugsy/plugin-*`) - Add support for programming languages
-2. **Command Plugins** (`@hugsy/commands-*`) - Add slash commands for common tasks
-3. **Feature Plugins** (`@hugsy/plugin-*`) - Add specific features like testing or security
-4. **Presets** (`@hugsy/preset-*`) - Pre-configured combinations of plugins
+1. **Language Plugins** (`@hugsylabs/plugin-*`) - Add support for programming languages
+2. **Command Plugins** (`@hugsylabs/commands-*`) - Add slash commands for common tasks
+3. **Feature Plugins** (`@hugsylabs/plugin-*`) - Add specific features like testing or security
+4. **Presets** (`@hugsylabs/preset-*`) - Pre-configured combinations of plugins
 
 ### Creating Your Own Plugin
 
