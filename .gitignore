@@ -51,8 +51,8 @@ Thumbs.db
 .turbo/
 
 # Changesets
-.changeset/*.md
-!.changeset/config.json
+.changeset/.cache
+!.changeset/*.md
 
 # Misc
 *.bak

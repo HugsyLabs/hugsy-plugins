@@ -50,6 +50,18 @@ importers:
         specifier: '>=0.0.1'
         version: 0.0.6
 
+  packages/plugins/docker:
+    dependencies:
+      '@hugsylabs/hugsy':
+        specifier: '>=0.0.1'
+        version: 0.0.6
+
+  packages/plugins/git:
+    dependencies:
+      '@hugsylabs/hugsy':
+        specifier: '>=0.0.1'
+        version: 0.0.6
+
   packages/plugins/node:
     dependencies:
       '@hugsylabs/hugsy':
@@ -57,6 +69,30 @@ importers:
         version: 0.0.6
 
   packages/plugins/python:
+    dependencies:
+      '@hugsylabs/hugsy':
+        specifier: '>=0.0.1'
+        version: 0.0.6
+
+  packages/plugins/security:
+    dependencies:
+      '@hugsylabs/hugsy':
+        specifier: '>=0.0.1'
+        version: 0.0.6
+
+  packages/plugins/test:
+    dependencies:
+      '@hugsylabs/hugsy':
+        specifier: '>=0.0.1'
+        version: 0.0.6
+
+  packages/plugins/typescript:
+    dependencies:
+      '@hugsylabs/hugsy':
+        specifier: '>=0.0.1'
+        version: 0.0.6
+
+  packages/presets/recommended:
     dependencies:
       '@hugsylabs/hugsy':
         specifier: '>=0.0.1'

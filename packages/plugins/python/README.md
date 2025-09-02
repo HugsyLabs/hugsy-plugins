@@ -15,7 +15,7 @@ Python development support for Hugsy - comprehensive Python toolchain integratio
 ## Installation
 
 ```bash
-npm install -D @hugsy/plugin-python
+npm install @hugsy/plugin-python
 ```
 
 ## Usage

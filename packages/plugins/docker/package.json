@@ -1,0 +1,44 @@
+{
+  "name": "@hugsy/plugin-docker",
+  "version": "0.0.1",
+  "description": "Docker container management support for Hugsy - containerization and orchestration",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "scripts": {
+    "lint": "eslint index.js",
+    "test": "vitest run"
+  },
+  "files": [
+    "index.js",
+    "README.md"
+  ],
+  "keywords": [
+    "hugsy",
+    "plugin",
+    "docker",
+    "container",
+    "containerization",
+    "docker-compose",
+    "claude-code"
+  ],
+  "author": "Hugsy Contributors",
+  "license": "MIT",
+  "homepage": "https://github.com/HugsyLab/hugsy-plugins/tree/main/packages/plugins/docker",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HugsyLab/hugsy-plugins.git",
+    "directory": "packages/plugins/docker"
+  },
+  "bugs": {
+    "url": "https://github.com/HugsyLab/hugsy-plugins/issues"
+  },
+  "peerDependencies": {
+    "@hugsylabs/hugsy": ">=0.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
