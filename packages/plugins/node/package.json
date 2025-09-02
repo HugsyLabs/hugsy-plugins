@@ -1,6 +1,6 @@
 {
   "name": "@hugsylabs/plugin-node",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Node.js development support for Hugsy - adds Node.js toolchain permissions and hooks",
   "type": "module",
   "main": "index.js",
