@@ -1,6 +1,6 @@
 {
   "name": "@hugsylabs/plugin-security",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Security restrictions for Hugsy - protect sensitive files and operations",
   "type": "module",
   "main": "index.js",

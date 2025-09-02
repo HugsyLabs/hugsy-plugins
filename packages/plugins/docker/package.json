@@ -1,6 +1,6 @@
 {
   "name": "@hugsylabs/plugin-docker",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Docker container management support for Hugsy - containerization and orchestration",
   "type": "module",
   "main": "index.js",

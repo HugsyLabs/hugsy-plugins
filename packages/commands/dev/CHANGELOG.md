@@ -1,5 +1,11 @@
 # @hugsy/commands-dev
 
+## 0.0.4
+
+### Patch Changes
+
+- 7ae2535: Fix package names from @hugsy/_ to @hugsylabs/_ for all packages
+
 ## 0.0.3
 
 ### Patch Changes
