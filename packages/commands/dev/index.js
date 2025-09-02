@@ -9,9 +9,20 @@ export default {
   description: 'Essential development commands for productive coding',
 
   transform(config) {
-    // Initialize commands structure
-    config.commands = config.commands || {};
-    config.commands.commands = config.commands.commands || {};
+    // Initialize commands structure if it doesn't exist
+    if (!config.commands) {
+      config.commands = {};
+    }
+
+    // If commands is an array (shorthand for presets), convert to object format
+    if (Array.isArray(config.commands)) {
+      config.commands = { presets: config.commands };
+    }
+
+    // Initialize commands.commands if it doesn't exist
+    if (!config.commands.commands) {
+      config.commands.commands = {};
+    }
 
     // Add development commands
     Object.assign(config.commands.commands, {
