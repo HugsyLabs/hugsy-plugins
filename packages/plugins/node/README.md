@@ -15,7 +15,7 @@ Node.js development support for Hugsy - comprehensive Node.js and JavaScript too
 ## Installation
 
 ```bash
-npm install -D @hugsy/plugin-node
+npm install @hugsy/plugin-node
 ```
 
 ## Usage

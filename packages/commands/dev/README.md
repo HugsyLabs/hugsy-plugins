@@ -20,7 +20,7 @@ Essential development slash commands for Hugsy - boost your productivity with Cl
 ## Installation
 
 ```bash
-npm install -D @hugsy/commands-dev
+npm install @hugsy/commands-dev
 ```
 
 ## Usage
