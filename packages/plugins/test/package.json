@@ -1,5 +1,5 @@
 {
-  "name": "@hugsy/plugin-test",
+  "name": "@hugsylabs/plugin-test",
   "version": "0.0.2",
   "description": "Test execution support for Hugsy - testing frameworks and coverage",
   "type": "module",
@@ -42,5 +42,8 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

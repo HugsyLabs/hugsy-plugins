@@ -1,5 +1,5 @@
 {
-  "name": "@hugsy/preset-recommended",
+  "name": "@hugsylabs/preset-recommended",
   "version": "0.0.2",
   "description": "Recommended preset for Hugsy - balanced configuration for most projects",
   "type": "module",
@@ -35,5 +35,8 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

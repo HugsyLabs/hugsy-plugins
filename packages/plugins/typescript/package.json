@@ -1,5 +1,5 @@
 {
-  "name": "@hugsy/plugin-typescript",
+  "name": "@hugsylabs/plugin-typescript",
   "version": "0.0.2",
   "description": "TypeScript development support for Hugsy - type checking and compilation",
   "type": "module",
@@ -39,5 +39,8 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
