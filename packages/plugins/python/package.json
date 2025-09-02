@@ -1,5 +1,5 @@
 {
-  "name": "@hugsy/plugin-python",
+  "name": "@hugsylabs/plugin-python",
   "version": "0.0.3",
   "description": "Python development support for Hugsy - adds Python toolchain permissions and hooks",
   "type": "module",

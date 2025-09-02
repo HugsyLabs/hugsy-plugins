@@ -3,14 +3,14 @@
   "version": "0.0.1",
   "description": "Recommended configuration for most projects",
   "plugins": [
-    "@hugsy/plugin-git",
-    "@hugsy/plugin-node",
-    "@hugsy/plugin-typescript",
-    "@hugsy/plugin-test",
-    "@hugsy/plugin-security"
+    "@hugsylabs/plugin-git",
+    "@hugsylabs/plugin-node",
+    "@hugsylabs/plugin-typescript",
+    "@hugsylabs/plugin-test",
+    "@hugsylabs/plugin-security"
   ],
   "slashCommands": {
-    "packages": ["@hugsy/commands-dev"]
+    "packages": ["@hugsylabs/commands-dev"]
   },
   "env": {
     "NODE_ENV": "development",

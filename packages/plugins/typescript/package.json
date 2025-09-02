@@ -1,5 +1,5 @@
 {
-  "name": "@hugsy/plugin-typescript",
+  "name": "@hugsylabs/plugin-typescript",
   "version": "0.0.3",
   "description": "TypeScript development support for Hugsy - type checking and compilation",
   "type": "module",
