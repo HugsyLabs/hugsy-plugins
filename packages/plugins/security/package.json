@@ -1,5 +1,5 @@
 {
-  "name": "@hugsy/plugin-security",
+  "name": "@hugsylabs/plugin-security",
   "version": "0.0.3",
   "description": "Security restrictions for Hugsy - protect sensitive files and operations",
   "type": "module",

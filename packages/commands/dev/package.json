@@ -1,5 +1,5 @@
 {
-  "name": "@hugsy/commands-dev",
+  "name": "@hugsylabs/commands-dev",
   "version": "0.0.3",
   "description": "Development slash commands for Hugsy - productivity commands for Claude Code",
   "type": "module",

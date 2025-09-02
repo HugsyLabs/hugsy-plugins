@@ -1,5 +1,5 @@
 {
-  "name": "@hugsy/plugin-git",
+  "name": "@hugsylabs/plugin-git",
   "version": "0.0.3",
   "description": "Git integration for Hugsy - version control permissions and hooks",
   "type": "module",
