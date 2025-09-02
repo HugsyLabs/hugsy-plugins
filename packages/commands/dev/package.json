@@ -1,6 +1,6 @@
 {
   "name": "@hugsy/commands-dev",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Development slash commands for Hugsy - productivity commands for Claude Code",
   "type": "module",
   "main": "index.js",
