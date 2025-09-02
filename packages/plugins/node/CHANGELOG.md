@@ -1,5 +1,13 @@
 # @hugsy/plugin-node
 
+## 0.0.3
+
+### Patch Changes
+
+- 781753f: fix: Add publishConfig for npm publishing
+  - Added `publishConfig.access: "public"` to all packages to enable npm publishing for scoped packages
+  - This fixes the npm 404 error when publishing @hugsy scoped packages
+
 ## 0.0.2
 
 ### Patch Changes
