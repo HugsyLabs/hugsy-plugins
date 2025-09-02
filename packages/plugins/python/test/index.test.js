@@ -30,7 +30,7 @@ describe('@hugsy/plugin-python', () => {
     expect(result.env).toBeDefined();
     expect(result.env.PYTHONDONTWRITEBYTECODE).toBe('1');
     expect(result.env.PYTHONUNBUFFERED).toBe('1');
-    expect(result.env.PIP_DISABLE_PIP_VERSION_CHECK).toBe('1');
+    expect(result.env.PYTHONPATH).toBe('.');
   });
 
   it('should add Python hooks', () => {

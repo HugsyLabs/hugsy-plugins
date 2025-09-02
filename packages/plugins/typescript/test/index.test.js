@@ -17,13 +17,14 @@ describe('@hugsy/plugin-typescript', () => {
     const result = plugin.transform(config);
 
     expect(result.permissions).toBeDefined();
-    expect(result.permissions.allow).toContain('Bash(tsc)');
+    // Simplified permissions
     expect(result.permissions.allow).toContain('Bash(tsc *)');
-    expect(result.permissions.allow).toContain('Bash(npx tsc *)');
+    expect(result.permissions.allow).toContain('Bash(tsx *)');
+    expect(result.permissions.allow).toContain('Bash(ts-node *)');
     expect(result.permissions.allow).toContain('Write(**/*.ts)');
     expect(result.permissions.allow).toContain('Write(**/*.tsx)');
     expect(result.permissions.allow).toContain('Write(**/*.d.ts)');
-    expect(result.permissions.allow).toContain('Write(**/tsconfig.json)');
+    expect(result.permissions.allow).toContain('Write(**/tsconfig*.json)');
   });
 
   it('should add TypeScript environment variables', () => {
@@ -31,7 +32,7 @@ describe('@hugsy/plugin-typescript', () => {
     const result = plugin.transform(config);
 
     expect(result.env).toBeDefined();
-    expect(result.env.TS_NODE_TRANSPILE_ONLY).toBe('0');
+    expect(result.env.TS_NODE_TRANSPILE_ONLY).toBe('true');
     expect(result.env.TS_NODE_PROJECT).toBe('./tsconfig.json');
   });
 
@@ -44,15 +45,6 @@ describe('@hugsy/plugin-typescript', () => {
     expect(result.hooks.PostToolUse).toBeDefined();
     expect(result.hooks.PreToolUse.length).toBeGreaterThan(0);
     expect(result.hooks.PostToolUse.length).toBeGreaterThan(0);
-  });
-
-  it('should add ask permissions for clean operations', () => {
-    const config = {};
-    const result = plugin.transform(config);
-
-    expect(result.permissions.ask).toBeDefined();
-    expect(result.permissions.ask).toContain('Bash(tsc --build --clean)');
-    expect(result.permissions.ask).toContain('Bash(rm -rf dist/types)');
   });
 
   it('should preserve existing config', () => {
@@ -68,21 +60,30 @@ describe('@hugsy/plugin-typescript', () => {
     const result = plugin.transform(config);
 
     expect(result.permissions.allow).toContain('Bash(echo *)');
-    expect(result.permissions.allow).toContain('Bash(tsc)');
+    expect(result.permissions.allow).toContain('Bash(tsc *)');
     expect(result.env.CUSTOM_VAR).toBe('value');
-    expect(result.env.TS_NODE_TRANSPILE_ONLY).toBe('0');
+    expect(result.env.TS_NODE_TRANSPILE_ONLY).toBe('true');
   });
 
   it('should not duplicate permissions', () => {
     const config = {
       permissions: {
-        allow: ['Bash(tsc)']
+        allow: ['Bash(tsc *)']
       }
     };
 
     const result = plugin.transform(config);
-    const tscCount = result.permissions.allow.filter((p) => p === 'Bash(tsc)').length;
+    const tscCount = result.permissions.allow.filter((p) => p === 'Bash(tsc *)').length;
 
     expect(tscCount).toBe(1);
+  });
+
+  it('should have reasonable defaults for permissions', () => {
+    const config = {};
+    const result = plugin.transform(config);
+
+    // No more ask permissions for TypeScript - trust developers
+    expect(result.permissions.ask || []).not.toContain('Bash(tsc --build --clean)');
+    expect(result.permissions.ask || []).not.toContain('Bash(rm -rf dist/types)');
   });
 });

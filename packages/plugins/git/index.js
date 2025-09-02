@@ -1,11 +1,6 @@
 /**
- * @hugsy/plugin-git
+ * @hugsylabs/plugin-git
  * Git version control integration for Claude Code
- *
- * This plugin focuses solely on Git operations:
- * - Git command permissions
- * - Pre-commit and pre-push hooks
- * - Git configuration files
  */
 
 export default {
@@ -21,81 +16,16 @@ export default {
     config.permissions.deny = config.permissions.deny || [];
     config.hooks = config.hooks || {};
 
-    // Git command permissions
+    // SIMPLIFIED: Trust git users
     const gitPermissions = [
-      // Basic operations
-      'Bash(git init)',
-      'Bash(git init *)',
-      'Bash(git clone *)',
-      'Bash(git status)',
-      'Bash(git status *)',
+      // All git operations
+      'Bash(git *)',
+      'Bash(gh *)',  // GitHub CLI
 
-      // Staging
-      'Bash(git add *)',
-      'Bash(git add .)',
-      'Bash(git add -A)',
-      'Bash(git add -p)',
-      'Bash(git reset *)',
-      'Bash(git reset)',
-      'Bash(git restore *)',
-
-      // Committing
-      'Bash(git commit *)',
-      'Bash(git commit -m *)',
-      'Bash(git commit -am *)',
-      'Bash(git commit --amend)',
-      'Bash(git commit --amend *)',
-
-      // Branching
-      'Bash(git branch)',
-      'Bash(git branch *)',
-      'Bash(git checkout *)',
-      'Bash(git checkout -b *)',
-      'Bash(git switch *)',
-      'Bash(git merge *)',
-      'Bash(git rebase *)',
-
-      // Remote operations
-      'Bash(git remote *)',
-      'Bash(git fetch)',
-      'Bash(git fetch *)',
-      'Bash(git pull)',
-      'Bash(git pull *)',
-      'Bash(git push)',
-      'Bash(git push *)',
-
-      // History and diff
-      'Bash(git log)',
-      'Bash(git log *)',
-      'Bash(git diff)',
-      'Bash(git diff *)',
-      'Bash(git show *)',
-      'Bash(git blame *)',
-
-      // Stashing
-      'Bash(git stash)',
-      'Bash(git stash *)',
-
-      // Tags
-      'Bash(git tag)',
-      'Bash(git tag *)',
-
-      // Submodules
-      'Bash(git submodule *)',
-
-      // Config
-      'Bash(git config *)',
-
-      // GitHub CLI
-      'Bash(gh *)',
-
-      // Git files
-      'Write(**/.gitignore)',
-      'Write(**/.gitattributes)',
-      'Write(**/.gitmodules)',
-      'Write(**/.gitkeep)',
-      'Write(**/CODEOWNERS)',
-      'Write(**/.github/**)'
+      // Git-related files
+      'Write(**/.git*)',
+      'Write(**/.github/**)',
+      'Write(**/CODEOWNERS)'
     ];
 
     // Add permissions that aren't already present
@@ -105,16 +35,11 @@ export default {
       }
     });
 
-    // Ask permissions for sensitive operations
+    // Ask for destructive operations
     const askPermissions = [
-      'Bash(git push --force)',
-      'Bash(git push --force-with-lease)',
-      'Bash(git reset --hard)',
-      'Bash(git clean -fd)',
-      'Bash(git rebase -i *)',
-      'Bash(git cherry-pick *)',
-      'Bash(git revert *)',
-      'Bash(git config --global *)'
+      'Bash(git push --force *)',
+      'Bash(git reset --hard *)',
+      'Bash(git rebase *)'
     ];
 
     askPermissions.forEach((perm) => {
@@ -123,13 +48,10 @@ export default {
       }
     });
 
-    // Deny dangerous operations
+    // Deny only truly dangerous operations
     const denyPermissions = [
       'Bash(git push --force origin main)',
-      'Bash(git push --force origin master)',
-      'Bash(git reset --hard origin/main)',
-      'Bash(git reset --hard origin/master)',
-      'Write(**/.git/**)'
+      'Bash(git push --force origin master)'
     ];
 
     denyPermissions.forEach((perm) => {
@@ -138,48 +60,33 @@ export default {
       }
     });
 
-    // Add Git-specific hooks
+    // Keep USEFUL hooks
     config.hooks.PreToolUse = config.hooks.PreToolUse || [];
 
-    // Hook: Check for uncommitted changes before certain operations
+    // Hook: Prevent commits to protected branches
     config.hooks.PreToolUse.push({
-      matcher: 'Bash(git checkout *)',
-      command:
-        'git status --porcelain | grep -q . && echo "⚠️ You have uncommitted changes" || true'
+      matcher: 'Bash(git commit *)',
+      command: 'git rev-parse --abbrev-ref HEAD | grep -E "^(main|master)$" && echo "⚠️ Warning: Committing directly to main/master branch" || true'
     });
 
-    // Hook: Remind to pull before push
+    // Hook: Check for large files before commit
     config.hooks.PreToolUse.push({
-      matcher: 'Bash(git push *)',
-      command: 'echo "💡 Remember to pull latest changes before pushing"'
+      matcher: 'Bash(git add *)',
+      command: 'find . -size +100M -type f 2>/dev/null | grep -v node_modules | head -5 | xargs -I {} echo "⚠️ Large file detected: {}"'
     });
 
-    // Hook: Check branch before push
-    config.hooks.PreToolUse.push({
-      matcher: 'Bash(git push)',
-      command:
-        'git rev-parse --abbrev-ref HEAD | grep -E "^(main|master)$" && echo "⚠️ Pushing to main branch" || true'
-    });
-
-    // Post-operation hooks
     config.hooks.PostToolUse = config.hooks.PostToolUse || [];
 
-    // Hook: After commit
+    // Hook: Remind to push after commit
     config.hooks.PostToolUse.push({
       matcher: 'Bash(git commit *)',
-      command: 'echo "✅ Commit created. Consider pushing your changes."'
+      command: 'echo "💡 Remember to push your changes when ready: git push"'
     });
 
-    // Hook: After merge
+    // Hook: Suggest PR after push
     config.hooks.PostToolUse.push({
-      matcher: 'Bash(git merge *)',
-      command: 'echo "🔀 Merge completed. Check for conflicts if any."'
-    });
-
-    // Hook: After clone
-    config.hooks.PostToolUse.push({
-      matcher: 'Bash(git clone *)',
-      command: 'echo "📦 Repository cloned. Remember to install dependencies."'
+      matcher: 'Bash(git push *)',
+      command: 'echo "✅ Changes pushed. Consider creating a pull request if working on a feature branch."'
     });
 
     return config;

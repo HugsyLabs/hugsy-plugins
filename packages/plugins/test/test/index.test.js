@@ -17,23 +17,25 @@ describe('@hugsy/plugin-test', () => {
     const result = plugin.transform(config);
 
     expect(result.permissions).toBeDefined();
-    expect(result.permissions.allow).toContain('Bash(jest)');
-    expect(result.permissions.allow).toContain('Bash(vitest)');
-    expect(result.permissions.allow).toContain('Bash(mocha)');
-    expect(result.permissions.allow).toContain('Bash(npm test)');
-    expect(result.permissions.allow).toContain('Bash(playwright test)');
-    expect(result.permissions.allow).toContain('Bash(cypress run)');
+    // Simplified: wildcards cover all test commands
+    expect(result.permissions.allow).toContain('Bash(npm test*)');
+    expect(result.permissions.allow).toContain('Bash(yarn test*)');
+    expect(result.permissions.allow).toContain('Bash(pnpm test*)');
+    expect(result.permissions.allow).toContain('Bash(jest *)');
+    expect(result.permissions.allow).toContain('Bash(vitest *)');
+    expect(result.permissions.allow).toContain('Bash(mocha *)');
+    expect(result.permissions.allow).toContain('Bash(pytest *)');
   });
 
   it('should add test file permissions', () => {
     const config = {};
     const result = plugin.transform(config);
 
-    expect(result.permissions.allow).toContain('Write(**/*.test.js)');
-    expect(result.permissions.allow).toContain('Write(**/*.spec.ts)');
+    expect(result.permissions.allow).toContain('Write(**/*.test.*)');
+    expect(result.permissions.allow).toContain('Write(**/*.spec.*)');
     expect(result.permissions.allow).toContain('Write(**/__tests__/**)');
-    expect(result.permissions.allow).toContain('Write(**/jest.config.js)');
-    expect(result.permissions.allow).toContain('Write(**/vitest.config.ts)');
+    expect(result.permissions.allow).toContain('Write(**/test/**)');
+    expect(result.permissions.allow).toContain('Write(**/tests/**)');
   });
 
   it('should add test hooks', () => {
@@ -53,7 +55,6 @@ describe('@hugsy/plugin-test', () => {
 
     expect(result.permissions.ask).toBeDefined();
     expect(result.permissions.ask).toContain('Bash(rm -rf coverage)');
-    expect(result.permissions.ask).toContain('Bash(rm -rf .nyc_output)');
   });
 
   it('should preserve existing config', () => {
@@ -66,18 +67,18 @@ describe('@hugsy/plugin-test', () => {
     const result = plugin.transform(config);
 
     expect(result.permissions.allow).toContain('Bash(echo *)');
-    expect(result.permissions.allow).toContain('Bash(jest)');
+    expect(result.permissions.allow).toContain('Bash(jest *)');
   });
 
   it('should not duplicate permissions', () => {
     const config = {
       permissions: {
-        allow: ['Bash(jest)']
+        allow: ['Bash(jest *)']
       }
     };
 
     const result = plugin.transform(config);
-    const jestCount = result.permissions.allow.filter((p) => p === 'Bash(jest)').length;
+    const jestCount = result.permissions.allow.filter((p) => p === 'Bash(jest *)').length;
 
     expect(jestCount).toBe(1);
   });
@@ -86,8 +87,8 @@ describe('@hugsy/plugin-test', () => {
     const config = {};
     const result = plugin.transform(config);
 
-    expect(result.permissions.allow).toContain('Bash(npm test)');
-    expect(result.permissions.allow).toContain('Bash(yarn test)');
-    expect(result.permissions.allow).toContain('Bash(pnpm test)');
+    expect(result.permissions.allow).toContain('Bash(npm test*)');
+    expect(result.permissions.allow).toContain('Bash(yarn test*)');
+    expect(result.permissions.allow).toContain('Bash(pnpm test*)');
   });
 });

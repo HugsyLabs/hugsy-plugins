@@ -12,58 +12,44 @@ describe('@hugsy/plugin-docker', () => {
     expect(typeof plugin.transform).toBe('function');
   });
 
-  it('should add Docker container permissions', () => {
+  it('should add Docker permissions with wildcards', () => {
     const config = {};
     const result = plugin.transform(config);
 
     expect(result.permissions).toBeDefined();
-    expect(result.permissions.allow).toContain('Bash(docker ps)');
-    expect(result.permissions.allow).toContain('Bash(docker start *)');
-    expect(result.permissions.allow).toContain('Bash(docker stop *)');
-    expect(result.permissions.allow).toContain('Bash(docker logs *)');
-    expect(result.permissions.allow).toContain('Bash(docker inspect *)');
-  });
-
-  it('should add Docker Compose permissions', () => {
-    const config = {};
-    const result = plugin.transform(config);
-
-    expect(result.permissions.allow).toContain('Bash(docker-compose up)');
-    expect(result.permissions.allow).toContain('Bash(docker-compose down)');
-    expect(result.permissions.allow).toContain('Bash(docker-compose ps)');
-    expect(result.permissions.allow).toContain('Bash(docker-compose logs)');
-    expect(result.permissions.allow).toContain('Bash(docker compose *)');
+    // Simplified: trust Docker users with broad permissions
+    expect(result.permissions.allow).toContain('Bash(docker *)');
+    expect(result.permissions.allow).toContain('Bash(docker-compose *)');
+    expect(result.permissions.allow).toContain('Bash(podman *)');
   });
 
   it('should add Docker file permissions', () => {
     const config = {};
     const result = plugin.transform(config);
 
-    expect(result.permissions.allow).toContain('Write(**/Dockerfile)');
+    expect(result.permissions.allow).toContain('Write(**/Dockerfile*)');
+    expect(result.permissions.allow).toContain('Write(**/docker-compose*.yml)');
+    expect(result.permissions.allow).toContain('Write(**/docker-compose*.yaml)');
     expect(result.permissions.allow).toContain('Write(**/.dockerignore)');
-    expect(result.permissions.allow).toContain('Write(**/docker-compose.yml)');
-    expect(result.permissions.allow).toContain('Write(**/docker-compose.yaml)');
   });
 
-  it('should add ask permissions for dangerous operations', () => {
+  it('should add ask permissions for potentially expensive operations', () => {
     const config = {};
     const result = plugin.transform(config);
 
     expect(result.permissions.ask).toBeDefined();
-    expect(result.permissions.ask).toContain('Bash(docker run *)');
-    expect(result.permissions.ask).toContain('Bash(docker exec *)');
-    expect(result.permissions.ask).toContain('Bash(docker rm *)');
+    expect(result.permissions.ask).toContain('Bash(docker system prune *)');
+    expect(result.permissions.ask).toContain('Bash(docker volume rm *)');
     expect(result.permissions.ask).toContain('Bash(docker rmi *)');
-    expect(result.permissions.ask).toContain('Bash(docker system prune)');
   });
 
-  it('should deny destructive operations', () => {
+  it('should deny only truly destructive operations', () => {
     const config = {};
     const result = plugin.transform(config);
 
     expect(result.permissions.deny).toBeDefined();
-    expect(result.permissions.deny).toContain('Bash(docker system prune -a --volumes)');
     expect(result.permissions.deny).toContain('Bash(docker rm -f $(docker ps -aq))');
+    expect(result.permissions.deny).toContain('Bash(docker system prune -a --volumes -f)');
   });
 
   it('should add Docker hooks', () => {
@@ -100,9 +86,8 @@ describe('@hugsy/plugin-docker', () => {
     const result = plugin.transform(config);
 
     expect(result.permissions.allow).toContain('Bash(echo *)');
-    expect(result.permissions.allow).toContain('Bash(docker ps)');
+    expect(result.permissions.allow).toContain('Bash(docker *)');
     expect(result.permissions.ask).toContain('Bash(sudo *)');
-    expect(result.permissions.ask).toContain('Bash(docker run *)');
     expect(result.env.CUSTOM_VAR).toBe('value');
     expect(result.env.DOCKER_BUILDKIT).toBe('1');
   });
@@ -110,13 +95,21 @@ describe('@hugsy/plugin-docker', () => {
   it('should not duplicate permissions', () => {
     const config = {
       permissions: {
-        allow: ['Bash(docker ps)']
+        allow: ['Bash(docker *)']
       }
     };
 
     const result = plugin.transform(config);
-    const psCount = result.permissions.allow.filter((p) => p === 'Bash(docker ps)').length;
+    const dockerCount = result.permissions.allow.filter((p) => p === 'Bash(docker *)').length;
 
-    expect(psCount).toBe(1);
+    expect(dockerCount).toBe(1);
+  });
+
+  it('should have Docker daemon check hook', () => {
+    const config = {};
+    const result = plugin.transform(config);
+
+    const daemonHook = result.hooks.PreToolUse.find(h => h.matcher === 'Bash(docker *)');
+    expect(daemonHook).toBeDefined();
   });
 });

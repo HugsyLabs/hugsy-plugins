@@ -12,27 +12,26 @@ describe('@hugsy/plugin-security', () => {
     expect(typeof plugin.transform).toBe('function');
   });
 
-  it('should deny sensitive file access', () => {
+  it('should deny truly dangerous operations', () => {
     const config = {};
     const result = plugin.transform(config);
 
     expect(result.permissions).toBeDefined();
     expect(result.permissions.deny).toBeDefined();
-    expect(result.permissions.deny).toContain('Read(**/.env)');
-    expect(result.permissions.deny).toContain('Read(**/*.key)');
-    expect(result.permissions.deny).toContain('Read(**/.ssh/**)');
-    expect(result.permissions.deny).toContain('Write(**/.env)');
-    expect(result.permissions.deny).toContain('Write(**/*.key)');
-  });
-
-  it('should deny dangerous bash commands', () => {
-    const config = {};
-    const result = plugin.transform(config);
-
+    
+    // System destruction
     expect(result.permissions.deny).toContain('Bash(rm -rf /)');
+    expect(result.permissions.deny).toContain('Bash(rm -rf /*)');
+    expect(result.permissions.deny).toContain('Bash(chmod 777 /)');
+    
+    // Remote code execution
     expect(result.permissions.deny).toContain('Bash(curl * | bash)');
+    expect(result.permissions.deny).toContain('Bash(wget * | sh)');
     expect(result.permissions.deny).toContain('Bash(eval *)');
-    expect(result.permissions.deny).toContain('Bash(npm install -g *)');
+    
+    // System files
+    expect(result.permissions.deny).toContain('Write(/etc/passwd)');
+    expect(result.permissions.deny).toContain('Write(/System/**)');
   });
 
   it('should ask before risky operations', () => {
@@ -41,9 +40,9 @@ describe('@hugsy/plugin-security', () => {
 
     expect(result.permissions.ask).toBeDefined();
     expect(result.permissions.ask).toContain('Bash(rm -rf *)');
-    expect(result.permissions.ask).toContain('Bash(chmod *)');
-    expect(result.permissions.ask).toContain('Bash(docker run *)');
-    expect(result.permissions.ask).toContain('Bash(git push --force)');
+    expect(result.permissions.ask).toContain('Bash(sudo *)');
+    expect(result.permissions.ask).toContain('Bash(git push --force origin main)');
+    expect(result.permissions.ask).toContain('Bash(npm install -g *)');
   });
 
   it('should add security hooks', () => {
@@ -69,39 +68,43 @@ describe('@hugsy/plugin-security', () => {
 
     expect(result.permissions.allow).toContain('Bash(echo *)');
     expect(result.permissions.deny).toContain('Read(/custom/path)');
-    expect(result.permissions.deny).toContain('Read(**/.env)');
+    expect(result.permissions.deny).toContain('Bash(rm -rf /)');
   });
 
   it('should not duplicate deny permissions', () => {
     const config = {
       permissions: {
-        deny: ['Read(**/.env)']
+        deny: ['Bash(rm -rf /)']
       }
     };
 
     const result = plugin.transform(config);
-    const envCount = result.permissions.deny.filter((p) => p === 'Read(**/.env)').length;
+    const count = result.permissions.deny.filter((p) => p === 'Bash(rm -rf /)').length;
 
-    expect(envCount).toBe(1);
+    expect(count).toBe(1);
   });
 
-  it('should protect cloud credentials', () => {
+  it('should have hooks for SSH and env file warnings', () => {
     const config = {};
     const result = plugin.transform(config);
 
-    expect(result.permissions.deny).toContain('Read(**/.aws/**)');
-    expect(result.permissions.deny).toContain('Read(**/.gcloud/**)');
-    expect(result.permissions.deny).toContain('Write(**/.aws/**)');
-    expect(result.permissions.deny).toContain('Write(**/.gcloud/**)');
+    // Check that we have hooks for SSH and env files
+    const sshHook = result.hooks.PreToolUse.find(h => h.matcher === 'Write(**/.ssh/**)');
+    const envHook = result.hooks.PreToolUse.find(h => h.matcher === 'Write(**/.env*)');
+    
+    expect(sshHook).toBeDefined();
+    expect(envHook).toBeDefined();
   });
 
-  it('should protect database files', () => {
+  it('should have hook for credential detection', () => {
     const config = {};
     const result = plugin.transform(config);
 
-    expect(result.permissions.deny).toContain('Read(**/*.db)');
-    expect(result.permissions.deny).toContain('Read(**/*.sqlite)');
-    expect(result.permissions.deny).toContain('Write(**/*.db)');
-    expect(result.permissions.deny).toContain('Write(**/*.sqlite)');
+    // Check that we have a hook for detecting credentials in code
+    const credentialHook = result.hooks.PostToolUse.find(h => 
+      h.matcher === 'Write(**/*.{js,ts,py,java,go})'
+    );
+    
+    expect(credentialHook).toBeDefined();
   });
 });
