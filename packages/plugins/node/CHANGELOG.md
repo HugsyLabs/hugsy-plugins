@@ -1,5 +1,15 @@
 # @hugsy/plugin-node
 
+## 0.0.6
+
+### Patch Changes
+
+- 0b9ff34: Add changeset verification to pre-commit hooks
+  - Add pre-commit hook to check for changesets when packages are modified
+  - Skip pre-commit hooks in CI environments (CI=true or GITHUB_ACTIONS=true)
+  - Provide interactive prompt for developers to decide whether to proceed without changeset
+  - Show clear instructions for creating changesets or skipping the check
+
 ## 0.0.5
 
 ### Patch Changes
