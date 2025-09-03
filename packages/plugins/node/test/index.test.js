@@ -71,7 +71,7 @@ describe('@hugsylabs/plugin-node', () => {
     expect(result.env.FORCE_COLOR).toBe('1');
   });
 
-  it('should add changeset version protection hook', () => {
+  it('should add simplified changeset version protection hook', () => {
     const config = {};
     const result = plugin.transform(config);
 
@@ -80,73 +80,52 @@ describe('@hugsylabs/plugin-node', () => {
     );
 
     expect(changesetHook).toBeDefined();
-    expect(changesetHook.command).toContain("Cannot run 'changeset version' on branch");
+    expect(changesetHook.command).toContain('changeset version requires main branch');
+    expect(changesetHook.command).toContain('--force to override');
   });
 
-  it('should add package manager detection hook', () => {
+  it('should add smart package manager detection hook', () => {
     const config = {};
     const result = plugin.transform(config);
 
     const pmHook = result.hooks.PreToolUse.find((hook) => hook.matcher === 'Bash(npm install*)');
 
     expect(pmHook).toBeDefined();
-    expect(pmHook.command).toContain('Found yarn.lock but using npm install');
+    expect(pmHook.command).toContain('recently updated');
+    expect(pmHook.command).toContain('consider:');
   });
 
-  it('should add Node version check hook', () => {
+  it('should check for missing node_modules', () => {
     const config = {};
     const result = plugin.transform(config);
 
-    const versionHook = result.hooks.PreToolUse.find(
-      (hook) => hook.matcher === 'Bash(npm start*)' && hook.command.includes('.nvmrc')
+    const nmHook = result.hooks.PreToolUse.find(
+      (hook) => hook.matcher === 'Bash(npm start*)' && hook.command.includes('node_modules')
     );
 
-    expect(versionHook).toBeDefined();
-    expect(versionHook.command).toContain('Node version mismatch');
+    expect(nmHook).toBeDefined();
+    expect(nmHook.command).toContain('Missing node_modules');
   });
 
-  it('should add lint before commit hook', () => {
+  it('should add dependency conflict detection', () => {
     const config = {};
     const result = plugin.transform(config);
 
-    const lintHook = result.hooks.PreToolUse.find((hook) => hook.matcher === 'Bash(git commit *)');
-
-    expect(lintHook).toBeDefined();
-    expect(lintHook.command).toContain('Running lint checks');
-  });
-
-  it('should add test before push hook', () => {
-    const config = {};
-    const result = plugin.transform(config);
-
-    const testHook = result.hooks.PreToolUse.find((hook) => hook.matcher === 'Bash(git push *)');
-
-    expect(testHook).toBeDefined();
-    expect(testHook.command).toContain('Running tests before push');
-  });
-
-  it('should add changeset guide post-hook', () => {
-    const config = {};
-    const result = plugin.transform(config);
-
-    const guideHook = result.hooks.PostToolUse.find(
-      (hook) => hook.matcher === 'Bash(*changeset add*)'
+    const conflictHook = result.hooks.PreToolUse.find(
+      (hook) => hook.matcher === 'Bash(npm install*|yarn install*|pnpm install*)'
     );
 
-    expect(guideHook).toBeDefined();
-    expect(guideHook.command).toContain('Changeset created successfully');
+    expect(conflictHook).toBeDefined();
+    expect(conflictHook.command).toContain('version mismatch');
   });
 
-  it('should add smart auto-install post-hook', () => {
+  it('should not have annoying post hooks', () => {
     const config = {};
     const result = plugin.transform(config);
 
-    const installHook = result.hooks.PostToolUse.find(
-      (hook) => hook.matcher === 'Write(**/package.json)'
-    );
-
-    expect(installHook).toBeDefined();
-    expect(installHook.command).toContain('package.json was modified');
+    // Check that we removed all the annoying post-hooks
+    const postHooks = result.hooks.PostToolUse || [];
+    expect(postHooks.length).toBe(0);
   });
 
   it('should preserve existing permissions', () => {

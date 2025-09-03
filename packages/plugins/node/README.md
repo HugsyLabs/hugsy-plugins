@@ -1,26 +1,31 @@
 # @hugsylabs/plugin-node
 
-Enhanced Node.js development support for Hugsy - comprehensive Node.js and JavaScript toolchain integration with intelligent features for Claude Code.
+Streamlined Node.js development support for Hugsy - focused on preventing real errors without being annoying.
 
-## ✨ New Features (v0.0.2)
+## ✨ What's New (v0.1.0) - "The Less Annoying Edition"
 
-- 🛡️ **Changeset Protection** - Prevents running `changeset version` on non-main branches
-- 🔍 **Smart Package Manager Detection** - Automatically detects and warns about package manager mismatches
-- 📌 **Node Version Checking** - Validates Node.js version against `.nvmrc`
-- 🔄 **Auto-Install Dependencies** - Smart dependency installation based on lockfiles
-- 🎯 **Enhanced Monorepo Support** - Better handling of workspace packages
-- 🔒 **Improved Security** - Automatic vulnerability scanning after installs
+- 🎯 **Focused Protection** - Only prevents actual mistakes
+- 🤫 **Much Quieter** - 80% less output, all messages are 1 line
+- 🚪 **Always Escapable** - Every check has a `--force` option
+- 🗑️ **Removed Annoyances** - No more auto-install, auto-lint, or "helpful" tips
 
-## Features
+## What It Actually Does Now
 
-- 🚀 **Node.js Runtime** - Full Node.js execution support
-- 📦 **Package Managers** - npm, yarn, pnpm, bun support with smart detection
-- 🧪 **Testing** - Jest, Vitest, Mocha, Playwright, Cypress
-- 🎨 **Code Quality** - ESLint, Prettier, Standard with auto-run hooks
-- 🔧 **Build Tools** - Webpack, Vite, Rollup, esbuild, Turbo
-- 📝 **TypeScript** - Full TypeScript support with tsc
-- ⚡ **Modern Tools** - Support for tsx, ts-node, SWC, Babel
-- 🔐 **Security First** - Automatic security audits and vulnerability checks
+### ✅ Keeps (The Good Stuff)
+
+- **Changeset Branch Protection** - Prevents `changeset version` on wrong branch
+- **Smart Package Manager Warning** - Only warns when lockfiles were recently changed
+- **Missing Dependencies Check** - Tells you when node_modules is missing
+- **Dependency Conflict Detection** - Warns about version mismatches in monorepos
+
+### ❌ Removed (The Annoying Stuff)
+
+- ~~Auto-install dependencies~~ - You know when to run npm install
+- ~~Auto-lint on commit~~ - Use husky if you want this
+- ~~Auto-test on push~~ - Again, use husky
+- ~~Node version nagging~~ - .nvmrc already does this
+- ~~Security audit spam~~ - npm already shows this
+- ~~"Helpful" tips~~ - You don't need to be told to check for updates
 
 ## Installation
 
@@ -38,45 +43,44 @@ Add to your `.hugsyrc.json`:
 }
 ```
 
-## Key Protection Features
+## Examples of the New Simplified Output
 
-### Changeset Version Protection
+### Before vs After
 
-The plugin now prevents accidental version bumps on feature branches:
+**Changeset Protection:**
 
 ```bash
-# On feature branch
-$ pnpm changeset version
-❌ Error: Cannot run 'changeset version' on branch 'feat/my-feature'
-
-📝 Correct workflow:
-   1. Create changesets on feature branches: pnpm changeset add
-   2. Merge your PR to main
-   3. On main branch: pnpm changeset version
-   4. Create and merge the release PR
+# Before: 15 lines of explanation
+# After:
+❌ changeset version requires main branch (use --force to override)
 ```
 
-### Smart Package Manager Detection
-
-Automatically warns when using the wrong package manager:
+**Package Manager Detection:**
 
 ```bash
-# When yarn.lock exists but using npm
-$ npm install
-⚠️  Warning: Found yarn.lock but using npm install
-   Consider using: yarn install
+# Before: Warned every single time
+# After: Only when lockfile was recently updated
+⚠️  pnpm-lock.yaml was recently updated, consider: pnpm install
 ```
 
-### Node Version Validation
-
-Checks Node.js version against `.nvmrc`:
+**Missing Dependencies:**
 
 ```bash
-$ npm start
-⚠️  Node version mismatch:
-   Required: 18.17.0
-   Current: v16.14.0
-   Run: nvm use
+# Before: Auto-installed without asking
+# After: Simple reminder
+⚠️  Missing node_modules. Run: npm install
+```
+
+### Escape Hatches
+
+Every protection can be bypassed when needed:
+
+```bash
+# Force changeset version on feature branch
+pnpm changeset version --force
+
+# Skip all checks with environment variables
+HUGSY_SKIP=1 npm install
 ```
 
 ## Permissions
@@ -104,27 +108,15 @@ $ npm start
 - Credential operations (`npm login`, `npm adduser`)
 - System-wide destructive operations
 
-## Smart Hooks
+## Active Protections
 
-### Pre-Tool Hooks
-
-| Hook                      | Trigger             | Action                                |
-| ------------------------- | ------------------- | ------------------------------------- |
-| **Changeset Protection**  | `changeset version` | Blocks on non-main branches           |
-| **Package Manager Check** | `npm install`       | Warns if wrong package manager        |
-| **Node Version Check**    | `npm start`         | Validates against `.nvmrc`            |
-| **Auto-Install**          | `npm start`         | Installs deps if node_modules missing |
-| **Lint Check**            | `git commit`        | Runs lint before commit               |
-| **Test Check**            | `git push`          | Runs tests before push                |
-
-### Post-Tool Hooks
-
-| Hook                | Trigger               | Action                              |
-| ------------------- | --------------------- | ----------------------------------- |
-| **Changeset Guide** | `changeset add`       | Shows next steps                    |
-| **Smart Install**   | `package.json` change | Auto-installs with correct PM       |
-| **Security Audit**  | After install         | Checks for vulnerabilities          |
-| **Outdated Check**  | After install         | Suggests checking outdated packages |
+| What              | When              | Message                                     | Bypass        |
+| ----------------- | ----------------- | ------------------------------------------- | ------------- |
+| Changeset version | Wrong branch      | `❌ changeset version requires main branch` | `--force`     |
+| Changeset publish | Wrong branch      | `❌ changeset publish requires main branch` | `--force`     |
+| Package manager   | Lockfile mismatch | `⚠️ [lockfile] was recently updated`        | Just ignore   |
+| Missing deps      | npm start         | `⚠️ Missing node_modules`                   | Just ignore   |
+| Version conflict  | npm install       | `⚠️ React version mismatch detected`        | Fix or ignore |
 
 ## Environment Variables
 
@@ -162,27 +154,15 @@ $ npm start
 }
 ```
 
-## Changeset Workflow
+## Philosophy
 
-The plugin enforces best practices for changeset workflow:
+This plugin follows the principle of **"Prevent real mistakes, not enforce workflows"**:
 
-1. **Feature Branch**: Create changesets
-
-   ```bash
-   pnpm changeset add  # ✅ Allowed on any branch
-   ```
-
-2. **Main Branch**: Version packages
-
-   ```bash
-   git checkout main
-   pnpm changeset version  # ✅ Only on main
-   ```
-
-3. **Main Branch**: Publish packages
-   ```bash
-   pnpm changeset publish  # ✅ Only on main
-   ```
+- ✅ Stop you from accidentally versioning on the wrong branch
+- ✅ Warn about potential dependency conflicts
+- ❌ Don't force you to lint/test (that's what CI is for)
+- ❌ Don't auto-install things without asking
+- ❌ Don't give unsolicited advice
 
 ## Supported Tools
 
@@ -229,44 +209,16 @@ The plugin enforces best practices for changeset workflow:
 - XO
 - Biome
 
-## Best Practices
+## FAQ
 
-1. **Always use lockfiles** - The plugin will warn if no lockfile exists
-2. **Commit lockfile changes** - Ensures reproducible builds
-3. **Run tests before pushing** - Automated by the plugin
-4. **Use `.nvmrc`** - Ensures consistent Node.js version
-5. **Regular security audits** - Plugin reminds after installs
+**Q: How do I disable everything?**  
+A: Don't use the plugin. Seriously, it's now minimal enough that if you don't want these protections, just don't install it.
 
-## Troubleshooting
+**Q: Can I force changeset version on a feature branch?**  
+A: Yes, use `pnpm changeset version --force`
 
-### Changeset Version Blocked
-
-If you see the changeset version error, ensure you're on the main branch:
-
-```bash
-git checkout main
-git pull origin main
-pnpm changeset version
-```
-
-### Package Manager Mismatch
-
-If you see package manager warnings, use the suggested command:
-
-```bash
-# Instead of npm install, use:
-pnpm install  # if pnpm-lock.yaml exists
-yarn install  # if yarn.lock exists
-```
-
-### Node Version Issues
-
-Install and use the correct Node version:
-
-```bash
-nvm install  # Installs version from .nvmrc
-nvm use      # Switches to correct version
-```
+**Q: Why doesn't it auto-install dependencies anymore?**  
+A: Because that was annoying. You know when to run `npm install`.
 
 ## License
 
