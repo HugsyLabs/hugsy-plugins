@@ -1,5 +1,40 @@
 #!/bin/sh
 
+# Skip hooks in CI
+if [ "$CI" = "true" ] || [ "$GITHUB_ACTIONS" = "true" ]; then
+  exit 0
+fi
+
+echo "📦 Checking for changeset..."
+# Check if there are any changesets
+CHANGESET_COUNT=$(ls -1 .changeset/*.md 2>/dev/null | grep -v README.md | wc -l | tr -d ' ')
+
+# Check if there are any changed packages
+CHANGED_PACKAGES=$(git diff --cached --name-only | grep -E "^packages/" | head -1)
+
+# If packages were changed but no changeset exists, warn the user
+if [ -n "$CHANGED_PACKAGES" ] && [ "$CHANGESET_COUNT" -eq "0" ]; then
+  echo "⚠️  Warning: You've modified packages but haven't created a changeset."
+  echo "   Changesets help track package versions and generate changelogs."
+  echo ""
+  echo "   To create a changeset, run:"
+  echo "   pnpm changeset add"
+  echo ""
+  echo "   To skip this check (for non-release changes like docs/tests), commit with:"
+  echo "   git commit --no-verify"
+  echo ""
+  read -p "   Do you want to continue without a changeset? (y/N): " -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "❌ Commit cancelled. Please create a changeset first."
+    exit 1
+  fi
+fi
+
+if [ "$CHANGESET_COUNT" -gt "0" ]; then
+  echo "✅ Found $CHANGESET_COUNT changeset(s)"
+fi
+
 echo "🔒 Checking lockfile..."
 pnpm install --frozen-lockfile || (echo "❌ Lockfile is out of date. Run 'pnpm install' to update it." && exit 1)
 
