@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Skip hooks in CI
+if [ "$CI" = "true" ] || [ "$GITHUB_ACTIONS" = "true" ]; then
+  exit 0
+fi
+
 echo "📦 Checking for changeset..."
 # Check if there are any changesets
 CHANGESET_COUNT=$(ls -1 .changeset/*.md 2>/dev/null | grep -v README.md | wc -l | tr -d ' ')
