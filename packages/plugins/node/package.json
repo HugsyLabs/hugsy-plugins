@@ -8,7 +8,8 @@
     ".": "./index.js"
   },
   "scripts": {
-    "lint": "eslint index.js"
+    "lint": "eslint index.js",
+    "prepare": "husky"
   },
   "files": [
     "index.js",
