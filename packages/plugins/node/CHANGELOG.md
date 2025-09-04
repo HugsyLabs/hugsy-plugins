@@ -1,5 +1,43 @@
 # @hugsy/plugin-node
 
+## 0.1.0
+
+### Minor Changes
+
+- ac30f64: Major simplification of plugin-node to be less annoying
+
+  ### Breaking Changes
+  - Removed auto-install of dependencies
+  - Removed auto-lint on commit
+  - Removed auto-test on push
+  - Removed all post-hook "helpful" messages
+  - Removed Node version nagging
+
+  ### Improvements
+  - Simplified all error messages to 1 line
+  - Added `--force` option to bypass changeset protection
+  - Package manager detection now only warns on recent lockfile changes
+  - Added dependency version conflict detection for monorepos
+  - 80% reduction in console output
+
+  ### Philosophy Change
+
+  From "protective nanny" to "minimal guardian" - only prevents real mistakes, doesn't enforce workflows
+
+### Patch Changes
+
+- 49a5384: Fix hooks format to comply with Claude Code specifications and remove broken deny permissions
+  - **BREAKING**: Fixed all plugin hooks to use correct Claude Code format
+    - Changed matcher from `"Bash(command pattern)"` to `"Bash"`
+    - Added proper hooks array structure with type and command fields
+    - Commands now use jq to parse tool input and check specific patterns
+  - **BREAKING**: Removed all deny permissions due to Claude Code bug
+    - Deny rules are completely non-functional (see anthropics/claude-code#4570)
+    - Removed deny configurations from all plugins to avoid false security sense
+    - Updated tests to remove deny permission checks
+  - Updated all plugin tests to match new hooks format
+  - All 57 tests passing with new structure
+
 ## 0.0.6
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@hugsylabs/plugin-git",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Git integration for Hugsy - version control permissions and hooks",
   "type": "module",
   "main": "index.js",

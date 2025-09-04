@@ -1,6 +1,6 @@
 {
   "name": "@hugsylabs/plugin-test",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Test execution support for Hugsy - testing frameworks and coverage",
   "type": "module",
   "main": "index.js",
