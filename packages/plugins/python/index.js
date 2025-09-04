@@ -13,7 +13,6 @@ export default {
     config.permissions = config.permissions || {};
     config.permissions.allow = config.permissions.allow || [];
     config.permissions.ask = config.permissions.ask || [];
-    config.permissions.deny = config.permissions.deny || [];
     config.hooks = config.hooks || {};
     config.env = config.env || {};
 
@@ -68,23 +67,11 @@ export default {
       }
     });
 
-    // Deny dangerous operations
-    const denyPermissions = [
-      'Bash(rm -rf /usr/lib/python*)',
-      'Bash(pip uninstall -y pip)'  // Don't break pip itself
-    ];
-
-    denyPermissions.forEach((perm) => {
-      if (!config.permissions.deny.includes(perm)) {
-        config.permissions.deny.push(perm);
-      }
-    });
-
     // Python-specific environment variables
     Object.assign(config.env, {
-      PYTHONUNBUFFERED: '1',  // See output in real-time
-      PYTHONDONTWRITEBYTECODE: '1',  // Don't create .pyc files
-      PYTHONPATH: '.'  // Include current directory
+      PYTHONUNBUFFERED: '1', // See output in real-time
+      PYTHONDONTWRITEBYTECODE: '1', // Don't create .pyc files
+      PYTHONPATH: '.' // Include current directory
     });
 
     // USEFUL hooks
@@ -92,14 +79,38 @@ export default {
 
     // Hook: Activate virtual environment reminder
     config.hooks.PreToolUse.push({
-      matcher: 'Bash(pip install *)',
-      command: 'test -d venv || test -d .venv || echo "💡 Consider creating a virtual environment: python -m venv venv"'
+      matcher: 'Bash',
+      hooks: [
+        {
+          type: 'command',
+          command: `bash -c '
+          INPUT=$(cat);
+          CMD=$(echo "$INPUT" | jq -r ".tool_input.command // empty");
+          if [[ "$CMD" == *"pip install"* ]]; then
+            test -d venv || test -d .venv || echo "💡 Consider creating a virtual environment: python -m venv venv";
+          fi
+          echo "$INPUT";
+        '`
+        }
+      ]
     });
 
     // Hook: Format before commit
     config.hooks.PreToolUse.push({
-      matcher: 'Bash(git commit *)',
-      command: 'black . --check --quiet 2>/dev/null || echo "⚠️ Code not formatted. Run: black ."'
+      matcher: 'Bash',
+      hooks: [
+        {
+          type: 'command',
+          command: `bash -c '
+          INPUT=$(cat);
+          CMD=$(echo "$INPUT" | jq -r ".tool_input.command // empty");
+          if [[ "$CMD" == *"git commit"* ]]; then
+            black . --check --quiet 2>/dev/null || echo "⚠️ Code not formatted. Run: black .";
+          fi
+          echo "$INPUT";
+        '`
+        }
+      ]
     });
 
     config.hooks.PostToolUse = config.hooks.PostToolUse || [];

@@ -43,15 +43,6 @@ describe('@hugsy/plugin-docker', () => {
     expect(result.permissions.ask).toContain('Bash(docker rmi *)');
   });
 
-  it('should deny only truly destructive operations', () => {
-    const config = {};
-    const result = plugin.transform(config);
-
-    expect(result.permissions.deny).toBeDefined();
-    expect(result.permissions.deny).toContain('Bash(docker rm -f $(docker ps -aq))');
-    expect(result.permissions.deny).toContain('Bash(docker system prune -a --volumes -f)');
-  });
-
   it('should add Docker hooks', () => {
     const config = {};
     const result = plugin.transform(config);
@@ -109,7 +100,14 @@ describe('@hugsy/plugin-docker', () => {
     const config = {};
     const result = plugin.transform(config);
 
-    const daemonHook = result.hooks.PreToolUse.find(h => h.matcher === 'Bash(docker *)');
-    expect(daemonHook).toBeDefined();
+    const bashHooks = result.hooks.PreToolUse.filter((h) => h.matcher === 'Bash');
+    const hasDockerDaemonCheck = bashHooks.some(
+      (hook) =>
+        hook.hooks &&
+        hook.hooks[0] &&
+        hook.hooks[0].command &&
+        hook.hooks[0].command.includes('docker')
+    );
+    expect(hasDockerDaemonCheck).toBe(true);
   });
 });

@@ -13,7 +13,6 @@ export default {
     config.permissions = config.permissions || {};
     config.permissions.allow = config.permissions.allow || [];
     config.permissions.ask = config.permissions.ask || [];
-    config.permissions.deny = config.permissions.deny || [];
     config.hooks = config.hooks || {};
     config.env = config.env || {};
 
@@ -22,7 +21,7 @@ export default {
       // All Docker operations
       'Bash(docker *)',
       'Bash(docker-compose *)',
-      'Bash(podman *)',  // Alternative to Docker
+      'Bash(podman *)', // Alternative to Docker
 
       // Docker-related files
       'Write(**/Dockerfile*)',
@@ -51,21 +50,9 @@ export default {
       }
     });
 
-    // Deny dangerous operations
-    const denyPermissions = [
-      'Bash(docker rm -f $(docker ps -aq))',  // Don't delete ALL containers
-      'Bash(docker system prune -a --volumes -f)'  // Don't wipe everything
-    ];
-
-    denyPermissions.forEach((perm) => {
-      if (!config.permissions.deny.includes(perm)) {
-        config.permissions.deny.push(perm);
-      }
-    });
-
     // Docker-specific environment variables
     Object.assign(config.env, {
-      DOCKER_BUILDKIT: '1',  // Enable BuildKit for better builds
+      DOCKER_BUILDKIT: '1', // Enable BuildKit for better builds
       COMPOSE_DOCKER_CLI_BUILD: '1'
     });
 
@@ -74,28 +61,76 @@ export default {
 
     // Hook: Check Docker daemon before operations
     config.hooks.PreToolUse.push({
-      matcher: 'Bash(docker *)',
-      command: 'docker info > /dev/null 2>&1 || echo "⚠️ Docker daemon is not running. Please start Docker first."'
+      matcher: 'Bash',
+      hooks: [
+        {
+          type: 'command',
+          command: `bash -c '
+          INPUT=$(cat);
+          CMD=$(echo "$INPUT" | jq -r ".tool_input.command // empty");
+          if [[ "$CMD" == docker* ]]; then
+            docker info > /dev/null 2>&1 || echo "⚠️ Docker daemon is not running. Please start Docker first.";
+          fi
+          echo "$INPUT";
+        '`
+        }
+      ]
     });
 
     config.hooks.PostToolUse = config.hooks.PostToolUse || [];
 
     // Hook: Suggest optimization after build
     config.hooks.PostToolUse.push({
-      matcher: 'Bash(docker build *)',
-      command: 'echo "💡 Consider using docker build --squash to reduce image size"'
+      matcher: 'Bash',
+      hooks: [
+        {
+          type: 'command',
+          command: `bash -c '
+          INPUT=$(cat);
+          CMD=$(echo "$INPUT" | jq -r ".tool_input.command // empty");
+          if [[ "$CMD" == *"docker build"* ]]; then
+            echo "💡 Consider using docker build --squash to reduce image size";
+          fi
+          echo "$INPUT";
+        '`
+        }
+      ]
     });
 
     // Hook: Cleanup reminder
     config.hooks.PostToolUse.push({
-      matcher: 'Bash(docker-compose down)',
-      command: 'echo "🧹 Run docker system prune to clean up unused resources"'
+      matcher: 'Bash',
+      hooks: [
+        {
+          type: 'command',
+          command: `bash -c '
+          INPUT=$(cat);
+          CMD=$(echo "$INPUT" | jq -r ".tool_input.command // empty");
+          if [[ "$CMD" == *"docker-compose down"* ]]; then
+            echo "🧹 Run docker system prune to clean up unused resources";
+          fi
+          echo "$INPUT";
+        '`
+        }
+      ]
     });
 
     // Hook: Security scan reminder
     config.hooks.PostToolUse.push({
-      matcher: 'Bash(docker build *)',
-      command: 'echo "🔒 Consider scanning your image for vulnerabilities: docker scan <image>"'
+      matcher: 'Bash',
+      hooks: [
+        {
+          type: 'command',
+          command: `bash -c '
+          INPUT=$(cat);
+          CMD=$(echo "$INPUT" | jq -r ".tool_input.command // empty");
+          if [[ "$CMD" == *"docker build"* ]]; then
+            echo "🔒 Consider scanning your image for vulnerabilities: docker scan <image>";
+          fi
+          echo "$INPUT";
+        '`
+        }
+      ]
     });
 
     return config;

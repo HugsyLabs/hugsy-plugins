@@ -49,6 +49,36 @@ describe('@hugsy/plugin-test', () => {
     expect(result.hooks.PostToolUse.length).toBeGreaterThan(0);
   });
 
+  it('should have pre-push test hook', () => {
+    const config = {};
+    const result = plugin.transform(config);
+
+    const bashHooks = result.hooks.PreToolUse.filter((h) => h.matcher === 'Bash');
+    const hasPrePushTest = bashHooks.some(
+      (hook) =>
+        hook.hooks &&
+        hook.hooks[0] &&
+        hook.hooks[0].command &&
+        hook.hooks[0].command.includes('git push')
+    );
+    expect(hasPrePushTest).toBe(true);
+  });
+
+  it('should have coverage reporting hook', () => {
+    const config = {};
+    const result = plugin.transform(config);
+
+    const bashHooks = result.hooks.PostToolUse.filter((h) => h.matcher === 'Bash');
+    const hasCoverageReport = bashHooks.some(
+      (hook) =>
+        hook.hooks &&
+        hook.hooks[0] &&
+        hook.hooks[0].command &&
+        hook.hooks[0].command.includes('Coverage report')
+    );
+    expect(hasCoverageReport).toBe(true);
+  });
+
   it('should add ask permissions for cleanup', () => {
     const config = {};
     const result = plugin.transform(config);
