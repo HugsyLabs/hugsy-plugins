@@ -43,7 +43,7 @@ export default {
     // TypeScript-specific environment variables
     Object.assign(config.env, {
       TS_NODE_PROJECT: './tsconfig.json',
-      TS_NODE_TRANSPILE_ONLY: 'true'  // Faster ts-node execution
+      TS_NODE_TRANSPILE_ONLY: 'true' // Faster ts-node execution
     });
 
     // USEFUL hooks
@@ -51,8 +51,20 @@ export default {
 
     // Hook: Type check before commit
     config.hooks.PreToolUse.push({
-      matcher: 'Bash(git commit *)',
-      command: 'tsc --noEmit || echo "⚠️ TypeScript errors found. Fix them before committing."'
+      matcher: 'Bash',
+      hooks: [
+        {
+          type: 'command',
+          command: `bash -c '
+          INPUT=$(cat);
+          CMD=$(echo "$INPUT" | jq -r ".tool_input.command // empty");
+          if [[ "$CMD" == *"git commit"* ]]; then
+            tsc --noEmit || echo "⚠️ TypeScript errors found. Fix them before committing.";
+          fi
+          echo "$INPUT";
+        '`
+        }
+      ]
     });
 
     config.hooks.PostToolUse = config.hooks.PostToolUse || [];
@@ -60,7 +72,7 @@ export default {
     // Hook: Generate types after changes
     config.hooks.PostToolUse.push({
       matcher: 'Write(**/*.ts)',
-      command: 'tsc --noEmit --incremental || true'  // Quick type check
+      command: 'tsc --noEmit --incremental || true' // Quick type check
     });
 
     return config;

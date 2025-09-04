@@ -15,40 +15,7 @@ export default {
     // Initialize config structures
     config.permissions = config.permissions || {};
     config.permissions.ask = config.permissions.ask || [];
-    config.permissions.deny = config.permissions.deny || [];
     config.hooks = config.hooks || {};
-
-    // SIMPLIFIED: Only deny truly dangerous operations
-    const denyPermissions = [
-      // System destruction
-      'Bash(rm -rf /)',
-      'Bash(rm -rf /*)',
-      'Bash(chmod 777 /)',
-      'Bash(chmod -R 777 /)',
-
-      // Remote code execution
-      'Bash(curl * | bash)',
-      'Bash(wget * | bash)',
-      'Bash(curl * | sh)',
-      'Bash(wget * | sh)',
-
-      // System files (not project files)
-      'Write(/etc/passwd)',
-      'Write(/etc/shadow)',
-      'Write(/etc/sudoers)',
-      'Write(/System/**)',
-      'Write(/Windows/**)',
-
-      // Dangerous evaluations
-      'Bash(eval *)'
-    ];
-
-    // Add deny permissions that aren't already present
-    denyPermissions.forEach((perm) => {
-      if (!config.permissions.deny.includes(perm)) {
-        config.permissions.deny.push(perm);
-      }
-    });
 
     // Ask for potentially risky operations
     const askPermissions = [
@@ -88,7 +55,8 @@ export default {
     // Hook: Warn about environment file changes
     config.hooks.PreToolUse.push({
       matcher: 'Write(**/.env*)',
-      command: 'echo "🔒 WARNING: Modifying environment file. Never commit secrets to version control."'
+      command:
+        'echo "🔒 WARNING: Modifying environment file. Never commit secrets to version control."'
     });
 
     // Hook: Warn about credentials in code
@@ -96,7 +64,8 @@ export default {
 
     config.hooks.PostToolUse.push({
       matcher: 'Write(**/*.{js,ts,py,java,go})',
-      command: 'grep -E "(api[_-]?key|password|secret|token)\\s*=\\s*[\\"\'`][^\\"\'`]+[\\"\'`]" "$1" 2>/dev/null | head -1 && echo "⚠️ WARNING: Possible hardcoded credentials detected!" || true'
+      command:
+        'grep -E "(api[_-]?key|password|secret|token)\\s*=\\s*[\\"\'`][^\\"\'`]+[\\"\'`]" "$1" 2>/dev/null | head -1 && echo "⚠️ WARNING: Possible hardcoded credentials detected!" || true'
     });
 
     return config;

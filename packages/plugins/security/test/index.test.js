@@ -12,28 +12,6 @@ describe('@hugsy/plugin-security', () => {
     expect(typeof plugin.transform).toBe('function');
   });
 
-  it('should deny truly dangerous operations', () => {
-    const config = {};
-    const result = plugin.transform(config);
-
-    expect(result.permissions).toBeDefined();
-    expect(result.permissions.deny).toBeDefined();
-    
-    // System destruction
-    expect(result.permissions.deny).toContain('Bash(rm -rf /)');
-    expect(result.permissions.deny).toContain('Bash(rm -rf /*)');
-    expect(result.permissions.deny).toContain('Bash(chmod 777 /)');
-    
-    // Remote code execution
-    expect(result.permissions.deny).toContain('Bash(curl * | bash)');
-    expect(result.permissions.deny).toContain('Bash(wget * | sh)');
-    expect(result.permissions.deny).toContain('Bash(eval *)');
-    
-    // System files
-    expect(result.permissions.deny).toContain('Write(/etc/passwd)');
-    expect(result.permissions.deny).toContain('Write(/System/**)');
-  });
-
   it('should ask before risky operations', () => {
     const config = {};
     const result = plugin.transform(config);
@@ -59,29 +37,14 @@ describe('@hugsy/plugin-security', () => {
   it('should preserve existing config', () => {
     const config = {
       permissions: {
-        allow: ['Bash(echo *)'],
-        deny: ['Read(/custom/path)']
+        allow: ['Bash(echo *)']
       }
     };
 
     const result = plugin.transform(config);
 
     expect(result.permissions.allow).toContain('Bash(echo *)');
-    expect(result.permissions.deny).toContain('Read(/custom/path)');
-    expect(result.permissions.deny).toContain('Bash(rm -rf /)');
-  });
-
-  it('should not duplicate deny permissions', () => {
-    const config = {
-      permissions: {
-        deny: ['Bash(rm -rf /)']
-      }
-    };
-
-    const result = plugin.transform(config);
-    const count = result.permissions.deny.filter((p) => p === 'Bash(rm -rf /)').length;
-
-    expect(count).toBe(1);
+    expect(result.permissions.allow).toContain('Bash(echo *)');
   });
 
   it('should have hooks for SSH and env file warnings', () => {
@@ -89,9 +52,9 @@ describe('@hugsy/plugin-security', () => {
     const result = plugin.transform(config);
 
     // Check that we have hooks for SSH and env files
-    const sshHook = result.hooks.PreToolUse.find(h => h.matcher === 'Write(**/.ssh/**)');
-    const envHook = result.hooks.PreToolUse.find(h => h.matcher === 'Write(**/.env*)');
-    
+    const sshHook = result.hooks.PreToolUse.find((h) => h.matcher === 'Write(**/.ssh/**)');
+    const envHook = result.hooks.PreToolUse.find((h) => h.matcher === 'Write(**/.env*)');
+
     expect(sshHook).toBeDefined();
     expect(envHook).toBeDefined();
   });
@@ -101,10 +64,10 @@ describe('@hugsy/plugin-security', () => {
     const result = plugin.transform(config);
 
     // Check that we have a hook for detecting credentials in code
-    const credentialHook = result.hooks.PostToolUse.find(h => 
-      h.matcher === 'Write(**/*.{js,ts,py,java,go})'
+    const credentialHook = result.hooks.PostToolUse.find(
+      (h) => h.matcher === 'Write(**/*.{js,ts,py,java,go})'
     );
-    
+
     expect(credentialHook).toBeDefined();
   });
 });

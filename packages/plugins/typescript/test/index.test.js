@@ -47,6 +47,21 @@ describe('@hugsy/plugin-typescript', () => {
     expect(result.hooks.PostToolUse.length).toBeGreaterThan(0);
   });
 
+  it('should have type checking hook before commits', () => {
+    const config = {};
+    const result = plugin.transform(config);
+
+    const bashHooks = result.hooks.PreToolUse.filter((h) => h.matcher === 'Bash');
+    const hasTypeCheck = bashHooks.some(
+      (hook) =>
+        hook.hooks &&
+        hook.hooks[0] &&
+        hook.hooks[0].command &&
+        hook.hooks[0].command.includes('tsc --noEmit')
+    );
+    expect(hasTypeCheck).toBe(true);
+  });
+
   it('should preserve existing config', () => {
     const config = {
       permissions: {

@@ -34,18 +34,29 @@
       "Write(**)",
       "Edit(**)"
     ],
-    "ask": ["Bash(sudo *)", "Bash(rm *)", "Bash(mv *)", "Bash(cp -r *)"],
-    "deny": []
+    "ask": ["Bash(sudo *)", "Bash(rm *)", "Bash(mv *)", "Bash(cp -r *)"]
   },
   "hooks": {
     "PostSessionEnd": [
       {
-        "command": "echo \"👋 Session ended. Remember to commit your changes if needed.\""
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '👋 Session ended. Remember to commit your changes if needed.'"
+          }
+        ]
       }
     ],
     "PreSessionStart": [
       {
-        "command": "echo \"🚀 Starting Claude Code session with recommended preset\""
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '🚀 Starting Claude Code session with recommended preset'"
+          }
+        ]
       }
     ]
   }

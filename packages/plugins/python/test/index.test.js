@@ -44,6 +44,36 @@ describe('@hugsy/plugin-python', () => {
     expect(result.hooks.PostToolUse.length).toBeGreaterThan(0);
   });
 
+  it('should have virtual environment reminder hook', () => {
+    const config = {};
+    const result = plugin.transform(config);
+
+    const bashHooks = result.hooks.PreToolUse.filter((h) => h.matcher === 'Bash');
+    const hasVenvReminder = bashHooks.some(
+      (hook) =>
+        hook.hooks &&
+        hook.hooks[0] &&
+        hook.hooks[0].command &&
+        hook.hooks[0].command.includes('virtual environment')
+    );
+    expect(hasVenvReminder).toBe(true);
+  });
+
+  it('should have code formatting check hook', () => {
+    const config = {};
+    const result = plugin.transform(config);
+
+    const bashHooks = result.hooks.PreToolUse.filter((h) => h.matcher === 'Bash');
+    const hasFormattingCheck = bashHooks.some(
+      (hook) =>
+        hook.hooks &&
+        hook.hooks[0] &&
+        hook.hooks[0].command &&
+        hook.hooks[0].command.includes('black')
+    );
+    expect(hasFormattingCheck).toBe(true);
+  });
+
   it('should preserve existing config', () => {
     const config = {
       permissions: {

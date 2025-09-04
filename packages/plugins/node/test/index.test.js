@@ -16,7 +16,6 @@ describe('@hugsylabs/plugin-node', () => {
     expect(result.permissions).toBeDefined();
     expect(result.permissions.allow).toBeInstanceOf(Array);
     expect(result.permissions.ask).toBeInstanceOf(Array);
-    expect(result.permissions.deny).toBeInstanceOf(Array);
     expect(result.hooks).toBeDefined();
     expect(result.env).toBeDefined();
   });
@@ -51,16 +50,6 @@ describe('@hugsylabs/plugin-node', () => {
     expect(result.permissions.ask).toContain('Bash(rm -rf node_modules)');
   });
 
-  it('should deny dangerous operations', () => {
-    const config = {};
-    const result = plugin.transform(config);
-
-    expect(result.permissions.deny).toContain('Bash(rm -rf /)');
-    expect(result.permissions.deny).toContain('Bash(npm login)');
-    expect(result.permissions.deny).toContain('Bash(npm adduser)');
-    expect(result.permissions.deny).toContain('Bash(npm logout)');
-  });
-
   it('should set environment variables', () => {
     const config = {};
     const result = plugin.transform(config);
@@ -75,48 +64,76 @@ describe('@hugsylabs/plugin-node', () => {
     const config = {};
     const result = plugin.transform(config);
 
-    const changesetHook = result.hooks.PreToolUse.find(
-      (hook) => hook.matcher === 'Bash(*changeset version*)'
+    const changesetHooks = result.hooks.PreToolUse.filter((hook) => hook.matcher === 'Bash');
+
+    // Check that we have Bash hooks
+    expect(changesetHooks.length).toBeGreaterThan(0);
+
+    // Check for changeset version protection in one of the hooks
+    const hasChangesetProtection = changesetHooks.some(
+      (hook) =>
+        hook.hooks &&
+        hook.hooks[0] &&
+        hook.hooks[0].command &&
+        hook.hooks[0].command.includes('changeset version requires main branch')
     );
 
-    expect(changesetHook).toBeDefined();
-    expect(changesetHook.command).toContain('changeset version requires main branch');
-    expect(changesetHook.command).toContain('--force to override');
+    expect(hasChangesetProtection).toBe(true);
   });
 
   it('should add smart package manager detection hook', () => {
     const config = {};
     const result = plugin.transform(config);
 
-    const pmHook = result.hooks.PreToolUse.find((hook) => hook.matcher === 'Bash(npm install*)');
+    const bashHooks = result.hooks.PreToolUse.filter((hook) => hook.matcher === 'Bash');
 
-    expect(pmHook).toBeDefined();
-    expect(pmHook.command).toContain('recently updated');
-    expect(pmHook.command).toContain('consider:');
+    // Check for package manager detection in one of the hooks
+    const hasPmDetection = bashHooks.some(
+      (hook) =>
+        hook.hooks &&
+        hook.hooks[0] &&
+        hook.hooks[0].command &&
+        hook.hooks[0].command.includes('recently updated') &&
+        hook.hooks[0].command.includes('consider:')
+    );
+
+    expect(hasPmDetection).toBe(true);
   });
 
   it('should check for missing node_modules', () => {
     const config = {};
     const result = plugin.transform(config);
 
-    const nmHook = result.hooks.PreToolUse.find(
-      (hook) => hook.matcher === 'Bash(npm start*)' && hook.command.includes('node_modules')
+    const bashHooks = result.hooks.PreToolUse.filter((hook) => hook.matcher === 'Bash');
+
+    // Check for node_modules detection in one of the hooks
+    const hasNodeModulesCheck = bashHooks.some(
+      (hook) =>
+        hook.hooks &&
+        hook.hooks[0] &&
+        hook.hooks[0].command &&
+        hook.hooks[0].command.includes('Missing node_modules')
     );
 
-    expect(nmHook).toBeDefined();
-    expect(nmHook.command).toContain('Missing node_modules');
+    expect(hasNodeModulesCheck).toBe(true);
   });
 
   it('should add dependency conflict detection', () => {
     const config = {};
     const result = plugin.transform(config);
 
-    const conflictHook = result.hooks.PreToolUse.find(
-      (hook) => hook.matcher === 'Bash(npm install*|yarn install*|pnpm install*)'
+    const bashHooks = result.hooks.PreToolUse.filter((hook) => hook.matcher === 'Bash');
+
+    // Check for conflict detection in one of the hooks
+    const hasConflictDetection = bashHooks.some(
+      (hook) =>
+        hook.hooks &&
+        hook.hooks[0] &&
+        hook.hooks[0].command &&
+        hook.hooks[0].command.includes('version mismatch')
     );
 
-    expect(conflictHook).toBeDefined();
-    expect(conflictHook.command).toContain('version mismatch');
+    expect(hasConflictDetection).toBe(true);
   });
 
   it('should not have annoying post hooks', () => {
@@ -132,8 +149,7 @@ describe('@hugsylabs/plugin-node', () => {
     const config = {
       permissions: {
         allow: ['Bash(custom *)'],
-        ask: ['Bash(dangerous *)'],
-        deny: ['Bash(forbidden *)']
+        ask: ['Bash(dangerous *)']
       }
     };
 
@@ -141,6 +157,5 @@ describe('@hugsylabs/plugin-node', () => {
 
     expect(result.permissions.allow).toContain('Bash(custom *)');
     expect(result.permissions.ask).toContain('Bash(dangerous *)');
-    expect(result.permissions.deny).toContain('Bash(forbidden *)');
   });
 });

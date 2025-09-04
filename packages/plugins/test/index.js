@@ -44,9 +44,7 @@ export default {
     });
 
     // Ask for coverage deletion (might want to keep it)
-    const askPermissions = [
-      'Bash(rm -rf coverage)'
-    ];
+    const askPermissions = ['Bash(rm -rf coverage)'];
 
     askPermissions.forEach((perm) => {
       if (!config.permissions.ask.includes(perm)) {
@@ -59,16 +57,40 @@ export default {
 
     // Hook: Run tests before push
     config.hooks.PreToolUse.push({
-      matcher: 'Bash(git push *)',
-      command: 'npm test --if-present || yarn test --if-present || pnpm test --if-present || echo "⚠️ No tests found"'
+      matcher: 'Bash',
+      hooks: [
+        {
+          type: 'command',
+          command: `bash -c '
+          INPUT=$(cat);
+          CMD=$(echo "$INPUT" | jq -r ".tool_input.command // empty");
+          if [[ "$CMD" == *"git push"* ]]; then
+            npm test --if-present || yarn test --if-present || pnpm test --if-present || echo "⚠️ No tests found";
+          fi
+          echo "$INPUT";
+        '`
+        }
+      ]
     });
 
     config.hooks.PostToolUse = config.hooks.PostToolUse || [];
 
     // Hook: Coverage report after tests
     config.hooks.PostToolUse.push({
-      matcher: 'Bash(*test*)',
-      command: 'test -d coverage && echo "📊 Coverage report generated in ./coverage" || true'
+      matcher: 'Bash',
+      hooks: [
+        {
+          type: 'command',
+          command: `bash -c '
+          INPUT=$(cat);
+          CMD=$(echo "$INPUT" | jq -r ".tool_input.command // empty");
+          if [[ "$CMD" == *test* ]]; then
+            test -d coverage && echo "📊 Coverage report generated in ./coverage" || true;
+          fi
+          echo "$INPUT";
+        '`
+        }
+      ]
     });
 
     // Hook: Suggest test creation
