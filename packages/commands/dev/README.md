@@ -1,4 +1,4 @@
-# @hugsy/commands-dev
+# @hugsylabs/commands-dev
 
 Essential development slash commands for Hugsy - boost your productivity with Claude Code.
 
@@ -20,7 +20,7 @@ Essential development slash commands for Hugsy - boost your productivity with Cl
 ## Installation
 
 ```bash
-npm install @hugsy/commands-dev
+npm install @hugsylabs/commands-dev
 ```
 
 ## Usage
@@ -30,7 +30,7 @@ Add to your `.hugsyrc.json`:
 ```json
 {
   "extends": "@hugsylabs/hugsy-compiler/presets/development",
-  "plugins": ["@hugsy/commands-dev"]
+  "plugins": ["@hugsylabs/commands-dev"]
 }
 ```
 
@@ -122,9 +122,9 @@ Set up the complete development environment for the project.
 
 Works great with:
 
-- `@hugsy/plugin-test` - For test-driven development
-- `@hugsy/plugin-git` - For version control workflows
-- `@hugsy/commands-refactor` - For code improvements
+- `@hugsylabs/plugin-test` - For test-driven development
+- `@hugsylabs/plugin-git` - For version control workflows
+- `@hugsylabs/commands-refactor` - For code improvements
 
 ## License
 

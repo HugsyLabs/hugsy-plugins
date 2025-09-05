@@ -1,4 +1,4 @@
-# @hugsy/plugin-docker
+# @hugsylabs/plugin-docker
 
 Docker container management plugin for Hugsy that focuses solely on Docker and Docker Compose operations.
 
@@ -15,7 +15,7 @@ Docker container management plugin for Hugsy that focuses solely on Docker and D
 ## Installation
 
 ```bash
-npm install @hugsy/plugin-docker
+npm install @hugsylabs/plugin-docker
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ Add to your `.hugsyrc.json`:
 
 ```json
 {
-  "plugins": ["@hugsy/plugin-docker"]
+  "plugins": ["@hugsylabs/plugin-docker"]
 }
 ```
 

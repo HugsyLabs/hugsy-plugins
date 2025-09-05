@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import plugin from '../index.js';
 
-describe('@hugsy/plugin-python', () => {
+describe('@hugsylabs/plugin-python', () => {
   it('should have correct plugin metadata', () => {
     expect(plugin.name).toBe('plugin-python');
     expect(plugin.version).toBe('0.0.1');

@@ -1,4 +1,4 @@
-# @hugsy/plugin-security
+# @hugsylabs/plugin-security
 
 Security restrictions plugin for Hugsy that focuses solely on protecting sensitive files and operations.
 
@@ -14,7 +14,7 @@ Security restrictions plugin for Hugsy that focuses solely on protecting sensiti
 ## Installation
 
 ```bash
-npm install @hugsy/plugin-security
+npm install @hugsylabs/plugin-security
 ```
 
 ## Usage
@@ -23,7 +23,7 @@ Add to your `.hugsyrc.json`:
 
 ```json
 {
-  "plugins": ["@hugsy/plugin-security"]
+  "plugins": ["@hugsylabs/plugin-security"]
 }
 ```
 
@@ -99,8 +99,8 @@ It does NOT handle:
 
 - General permissions (use presets)
 - Development workflows (use other plugins)
-- Git operations (use `@hugsy/plugin-git`)
-- Testing (use `@hugsy/plugin-test`)
+- Git operations (use `@hugsylabs/plugin-git`)
+- Testing (use `@hugsylabs/plugin-test`)
 
 ## Customization
 
@@ -108,7 +108,7 @@ You can override specific restrictions in your `.hugsyrc.json`:
 
 ```json
 {
-  "plugins": ["@hugsy/plugin-security"],
+  "plugins": ["@hugsylabs/plugin-security"],
   "permissions": {
     "allow": ["Read(**/.env.example)"]
   }

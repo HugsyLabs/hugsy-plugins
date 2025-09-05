@@ -1,4 +1,4 @@
-# @hugsy/preset-recommended
+# @hugsylabs/preset-recommended
 
 The recommended preset for Hugsy that provides a balanced configuration suitable for most projects.
 
@@ -8,18 +8,18 @@ This preset combines the following plugins:
 
 ### Development Plugins
 
-- **@hugsy/plugin-git** - Git version control integration
-- **@hugsy/plugin-node** - Node.js development support
-- **@hugsy/plugin-typescript** - TypeScript compilation and type checking
-- **@hugsy/plugin-test** - Testing framework support
+- **@hugsylabs/plugin-git** - Git version control integration
+- **@hugsylabs/plugin-node** - Node.js development support
+- **@hugsylabs/plugin-typescript** - TypeScript compilation and type checking
+- **@hugsylabs/plugin-test** - Testing framework support
 
 ### Security Plugin
 
-- **@hugsy/plugin-security** - Security restrictions and protections
+- **@hugsylabs/plugin-security** - Security restrictions and protections
 
 ### Slash Commands
 
-- **@hugsy/commands-dev** - Development productivity commands
+- **@hugsylabs/commands-dev** - Development productivity commands
 
 ## Features
 
@@ -50,7 +50,7 @@ This preset combines the following plugins:
 ## Installation
 
 ```bash
-npm install @hugsy/preset-recommended
+npm install @hugsylabs/preset-recommended
 ```
 
 ## Usage
@@ -59,7 +59,7 @@ In your `.hugsyrc.json`:
 
 ```json
 {
-  "extends": "@hugsy/preset-recommended"
+  "extends": "@hugsylabs/preset-recommended"
 }
 ```
 
@@ -114,8 +114,8 @@ You can extend or override the preset configuration:
 
 ```json
 {
-  "extends": "@hugsy/preset-recommended",
-  "plugins": ["@hugsy/plugin-python"],
+  "extends": "@hugsylabs/preset-recommended",
+  "plugins": ["@hugsylabs/plugin-python"],
   "permissions": {
     "allow": ["Read(**/.env.example)"]
   }
@@ -134,13 +134,13 @@ You can extend or override the preset configuration:
 
 ❌ **Consider alternatives for:**
 
-- Python-only projects (add @hugsy/plugin-python)
+- Python-only projects (add @hugsylabs/plugin-python)
 - Minimal configurations (use fewer plugins)
 - High-security environments (use stricter presets)
 
 ## Included Slash Commands
 
-From @hugsy/commands-dev:
+From @hugsylabs/commands-dev:
 
 - `/quick-fix` - Quick fixes for common issues
 - `/implement` - Implement features

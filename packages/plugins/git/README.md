@@ -1,4 +1,4 @@
-# @hugsy/plugin-git
+# @hugsylabs/plugin-git
 
 Git version control integration plugin for Hugsy that focuses solely on Git operations.
 
@@ -14,7 +14,7 @@ Git version control integration plugin for Hugsy that focuses solely on Git oper
 ## Installation
 
 ```bash
-npm install @hugsy/plugin-git
+npm install @hugsylabs/plugin-git
 ```
 
 ## Usage
@@ -23,7 +23,7 @@ Add to your `.hugsyrc.json`:
 
 ```json
 {
-  "plugins": ["@hugsy/plugin-git"]
+  "plugins": ["@hugsylabs/plugin-git"]
 }
 ```
 
@@ -88,7 +88,7 @@ This plugin focuses **solely** on Git operations:
 It does NOT handle:
 
 - Build processes (use build plugins)
-- Testing (use `@hugsy/plugin-test`)
+- Testing (use `@hugsylabs/plugin-test`)
 - Code formatting (use format plugins)
 - General file operations (use other plugins)
 
