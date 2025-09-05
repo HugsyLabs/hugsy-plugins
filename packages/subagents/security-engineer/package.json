@@ -1,14 +1,13 @@
 {
-  "name": "@hugsylabs/plugin-security-engineer",
+  "name": "@hugsylabs/subagent-security-engineer",
   "version": "0.0.1",
-  "description": "Security Engineer subagent plugin for Claude Code - adds specialized DevSecOps expertise",
+  "description": "Security Engineer subagent for Claude Code - specialized in DevSecOps and infrastructure security",
   "main": "index.js",
   "type": "module",
   "keywords": [
     "hugsy",
     "claude",
     "claude-code",
-    "plugin",
     "subagent",
     "security",
     "devsecops",
@@ -20,9 +19,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HugsyLabs/hugsy-plugins.git",
-    "directory": "packages/plugins/security-engineer"
+    "directory": "packages/subagents/security-engineer"
   },
-  "homepage": "https://github.com/HugsyLabs/hugsy-plugins/tree/main/packages/plugins/security-engineer",
+  "homepage": "https://github.com/HugsyLabs/hugsy-plugins/tree/main/packages/subagents/security-engineer",
   "bugs": {
     "url": "https://github.com/HugsyLabs/hugsy-plugins/issues"
   },
