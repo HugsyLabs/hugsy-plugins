@@ -1,5 +1,5 @@
 ---
-'@hugsylabs/subagent-security-engineer': minor
+'@hugsylabs/subagent-security-engineer': patch
 ---
 
 Add new security-engineer subagent package
