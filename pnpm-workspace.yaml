@@ -3,3 +3,4 @@ packages:
   - 'packages/plugins/*'
   - 'packages/commands/*'
   - 'packages/presets/*'
+  - 'packages/subagents/*'
