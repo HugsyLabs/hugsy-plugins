@@ -1,6 +1,6 @@
 {
   "name": "@hugsylabs/subagent-security-engineer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Security Engineer subagent for Claude Code - specialized in DevSecOps and infrastructure security",
   "main": "index.js",
   "type": "module",
