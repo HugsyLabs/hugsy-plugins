@@ -1,5 +1,13 @@
 # @hugsy/plugin-docker
 
+## 0.0.7
+
+### Patch Changes
+
+- fb023cb: Fix all URL and package name inconsistencies in documentation and package.json files.
+  - Corrected GitHub URLs from `HugsyLab` to `HugsyLabs` in all package.json files
+  - Updated package names from `@hugsy/` to `@hugsylabs/` in all README files to match actual NPM package names
+
 ## 0.0.6
 
 ### Patch Changes
