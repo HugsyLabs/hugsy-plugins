@@ -87,6 +87,8 @@ importers:
         specifier: '>=0.0.1'
         version: 0.0.6
 
+  packages/plugins/security-engineer: {}
+
   packages/plugins/test:
     dependencies:
       '@hugsylabs/hugsy':

@@ -1,6 +1,6 @@
 {
   "name": "@hugsy/plugin-security-engineer",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Security Engineer subagent plugin for Claude Code - adds specialized DevSecOps expertise",
   "main": "index.js",
   "type": "module",
