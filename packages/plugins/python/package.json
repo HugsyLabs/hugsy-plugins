@@ -1,6 +1,6 @@
 {
   "name": "@hugsylabs/plugin-python",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Python development support for Hugsy - adds Python toolchain permissions and hooks",
   "type": "module",
   "main": "index.js",
