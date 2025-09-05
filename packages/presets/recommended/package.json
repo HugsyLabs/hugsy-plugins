@@ -1,6 +1,6 @@
 {
   "name": "@hugsylabs/preset-recommended",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Recommended preset for Hugsy - balanced configuration for most projects",
   "type": "module",
   "main": "index.js",
