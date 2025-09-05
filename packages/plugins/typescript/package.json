@@ -25,14 +25,14 @@
   ],
   "author": "Hugsy Contributors",
   "license": "MIT",
-  "homepage": "https://github.com/HugsyLab/hugsy-plugins/tree/main/packages/plugins/typescript",
+  "homepage": "https://github.com/HugsyLabs/hugsy-plugins/tree/main/packages/plugins/typescript",
   "repository": {
     "type": "git",
-    "url": "https://github.com/HugsyLab/hugsy-plugins.git",
+    "url": "https://github.com/HugsyLabs/hugsy-plugins.git",
     "directory": "packages/plugins/typescript"
   },
   "bugs": {
-    "url": "https://github.com/HugsyLab/hugsy-plugins/issues"
+    "url": "https://github.com/HugsyLabs/hugsy-plugins/issues"
   },
   "peerDependencies": {
     "@hugsylabs/hugsy": ">=0.0.1"

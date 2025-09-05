@@ -1,4 +1,4 @@
-# @hugsy/plugin-test
+# @hugsylabs/plugin-test
 
 Test execution support plugin for Hugsy that focuses solely on testing operations.
 
@@ -14,7 +14,7 @@ Test execution support plugin for Hugsy that focuses solely on testing operation
 ## Installation
 
 ```bash
-npm install @hugsy/plugin-test
+npm install @hugsylabs/plugin-test
 ```
 
 ## Usage
@@ -23,7 +23,7 @@ Add to your `.hugsyrc.json`:
 
 ```json
 {
-  "plugins": ["@hugsy/plugin-test"]
+  "plugins": ["@hugsylabs/plugin-test"]
 }
 ```
 
@@ -90,10 +90,10 @@ This plugin focuses **solely** on test execution:
 
 It does NOT handle:
 
-- Linting (use `@hugsy/plugin-lint`)
-- Building (use `@hugsy/plugin-build`)
-- Type checking (use `@hugsy/plugin-typescript`)
-- Code formatting (use `@hugsy/plugin-format`)
+- Linting (use `@hugsylabs/plugin-lint`)
+- Building (use `@hugsylabs/plugin-build`)
+- Type checking (use `@hugsylabs/plugin-typescript`)
+- Code formatting (use `@hugsylabs/plugin-format`)
 
 ## License
 

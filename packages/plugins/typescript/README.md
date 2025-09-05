@@ -1,4 +1,4 @@
-# @hugsy/plugin-typescript
+# @hugsylabs/plugin-typescript
 
 TypeScript development support plugin for Hugsy that focuses solely on TypeScript operations.
 
@@ -15,7 +15,7 @@ TypeScript development support plugin for Hugsy that focuses solely on TypeScrip
 ## Installation
 
 ```bash
-npm install @hugsy/plugin-typescript
+npm install @hugsylabs/plugin-typescript
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ Add to your `.hugsyrc.json`:
 
 ```json
 {
-  "plugins": ["@hugsy/plugin-typescript"]
+  "plugins": ["@hugsylabs/plugin-typescript"]
 }
 ```
 
@@ -76,10 +76,10 @@ This plugin focuses **solely** on TypeScript operations:
 
 It does NOT handle:
 
-- General Node.js operations (use `@hugsy/plugin-node`)
-- Testing frameworks (use `@hugsy/plugin-test`)
+- General Node.js operations (use `@hugsylabs/plugin-node`)
+- Testing frameworks (use `@hugsylabs/plugin-test`)
 - Build tools (use specific build tool plugins)
-- Linting beyond TypeScript ESLint (use `@hugsy/plugin-lint`)
+- Linting beyond TypeScript ESLint (use `@hugsylabs/plugin-lint`)
 
 ## License
 

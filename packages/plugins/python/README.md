@@ -1,4 +1,4 @@
-# @hugsy/plugin-python
+# @hugsylabs/plugin-python
 
 Python development support for Hugsy - comprehensive Python toolchain integration for Claude Code.
 
@@ -15,7 +15,7 @@ Python development support for Hugsy - comprehensive Python toolchain integratio
 ## Installation
 
 ```bash
-npm install @hugsy/plugin-python
+npm install @hugsylabs/plugin-python
 ```
 
 ## Usage
@@ -25,7 +25,7 @@ Add to your `.hugsyrc.json`:
 ```json
 {
   "extends": "@hugsylabs/hugsy-compiler/presets/development",
-  "plugins": ["@hugsy/plugin-python"]
+  "plugins": ["@hugsylabs/plugin-python"]
 }
 ```
 
@@ -78,7 +78,7 @@ Add to your `.hugsyrc.json`:
 
 ```json
 {
-  "plugins": ["@hugsy/plugin-python"]
+  "plugins": ["@hugsylabs/plugin-python"]
 }
 ```
 
@@ -86,7 +86,7 @@ Add to your `.hugsyrc.json`:
 
 ```json
 {
-  "plugins": ["@hugsy/plugin-python", "@hugsy/plugin-test"]
+  "plugins": ["@hugsylabs/plugin-python", "@hugsylabs/plugin-test"]
 }
 ```
 
@@ -95,10 +95,10 @@ Add to your `.hugsyrc.json`:
 ```json
 {
   "plugins": [
-    "@hugsy/plugin-python",
-    "@hugsy/plugin-git",
-    "@hugsy/plugin-test",
-    "@hugsy/commands-dev"
+    "@hugsylabs/plugin-python",
+    "@hugsylabs/plugin-git",
+    "@hugsylabs/plugin-test",
+    "@hugsylabs/commands-dev"
   ]
 }
 ```
