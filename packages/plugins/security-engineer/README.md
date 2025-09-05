@@ -1,4 +1,4 @@
-# @hugsy/plugin-security-engineer
+# @hugsylabs/plugin-security-engineer
 
 A specialized security engineering subagent plugin for Claude Code that adds deep expertise in infrastructure security, DevSecOps practices, and cloud security architecture.
 
@@ -20,13 +20,13 @@ This plugin adds a `security-engineer` subagent to Claude Code with expertise in
 ## Installation
 
 ```bash
-npm install @hugsy/plugin-security-engineer
+npm install @hugsylabs/plugin-security-engineer
 ```
 
 Or with pnpm:
 
 ```bash
-pnpm add @hugsy/plugin-security-engineer
+pnpm add @hugsylabs/plugin-security-engineer
 ```
 
 ## Configuration
@@ -35,7 +35,7 @@ Add the plugin to your `.hugsyrc` or `.hugsyrc.json`:
 
 ```json
 {
-  "plugins": ["@hugsy/plugin-security-engineer"]
+  "plugins": ["@hugsylabs/plugin-security-engineer"]
 }
 ```
 
@@ -43,7 +43,7 @@ Or with JavaScript configuration (`.hugsyrc.js`):
 
 ```javascript
 export default {
-  plugins: ['@hugsy/plugin-security-engineer']
+  plugins: ['@hugsylabs/plugin-security-engineer']
 };
 ```
 

@@ -1,5 +1,5 @@
 ---
-'@hugsy/plugin-security-engineer': minor
+'@hugsylabs/plugin-security-engineer': minor
 ---
 
 Add new security-engineer subagent plugin
