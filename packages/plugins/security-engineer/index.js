@@ -1,5 +1,5 @@
 /**
- * @hugsy/plugin-security-engineer
+ * @hugsylabs/plugin-security-engineer
  * Security Engineer Subagent Plugin for Claude Code
  *
  * This plugin adds a specialized security engineering subagent to Claude Code
