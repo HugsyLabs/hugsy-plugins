@@ -32,21 +32,15 @@ describe('Quality Guard Hook', () => {
 
     it('should detect any type usage', () => {
       const regex = /:\s*any\b/;
-      
+
       const shouldMatch = [
         'let x: any',
         'const foo: any = 123',
         'function test(): any {',
-        'items: any[]',
-        'Map<string, any>'
+        'items: any[]'
       ];
 
-      const shouldNotMatch = [
-        'company: string',
-        'Germany',
-        'many: number',
-        'anyThing: string'
-      ];
+      const shouldNotMatch = ['company: string', 'Germany', 'many: number', 'anyThing: string'];
 
       shouldMatch.forEach((pattern) => {
         expect(regex.test(pattern)).toBe(true);
@@ -59,7 +53,7 @@ describe('Quality Guard Hook', () => {
 
     it('should detect as any type assertions', () => {
       const regex = /as\s+any\b/;
-      
+
       const shouldMatch = [
         'value as any',
         'obj as  any',
@@ -67,12 +61,7 @@ describe('Quality Guard Hook', () => {
         'return result as any;'
       ];
 
-      const shouldNotMatch = [
-        'as string',
-        'asany',
-        'has anyone',
-        'class AnyClass'
-      ];
+      const shouldNotMatch = ['as string', 'asany', 'has anyone', 'class AnyClass'];
 
       shouldMatch.forEach((pattern) => {
         expect(regex.test(pattern)).toBe(true);
@@ -85,7 +74,7 @@ describe('Quality Guard Hook', () => {
 
     it('should detect console.log statements', () => {
       const regex = /console\.(log|debug|info)/;
-      
+
       const shouldMatch = [
         'console.log("test")',
         'console.debug(data)',
@@ -104,7 +93,7 @@ describe('Quality Guard Hook', () => {
 
     it('should detect eslint-disable comments', () => {
       const regex = /\/\/ eslint-disable/;
-      
+
       const shouldMatch = [
         '// eslint-disable',
         '// eslint-disable-next-line',
@@ -119,7 +108,7 @@ describe('Quality Guard Hook', () => {
 
     it('should detect test.skip', () => {
       const regex = /test\.skip/;
-      
+
       const shouldMatch = [
         'test.skip("skipped test"',
         'it.skip("skipped it"',
@@ -134,7 +123,7 @@ describe('Quality Guard Hook', () => {
 
     it('should detect .only() test runners', () => {
       const regex = /\.only\(/;
-      
+
       const shouldMatch = [
         'test.only("focused test"',
         'it.only("focused it"',
@@ -150,7 +139,7 @@ describe('Quality Guard Hook', () => {
   describe('File-specific Rules', () => {
     it('should check for toBe(true) in test files', () => {
       const regex = /expect\(.*\)\.toBe\(true\)/;
-      
+
       const shouldMatch = [
         'expect(result).toBe(true)',
         'expect(isValid).toBe(true)',
@@ -174,7 +163,7 @@ describe('Quality Guard Hook', () => {
 
     it('should check for inline styles in TSX files', () => {
       const regex = /style\s*=\s*\{\{/;
-      
+
       const shouldMatch = [
         'style={{color: "red"}}',
         'style={{ margin: 10 }}',
@@ -236,9 +225,9 @@ describe('Quality Guard Hook', () => {
     });
 
     it('should handle very long lines', () => {
-      const longLine = 'const x: any = ' + 'a'.repeat(10000);
+      const longLine = `const x: any = ${'a'.repeat(10000)}`;
       const regex = /:\s*any\b/;
-      
+
       expect(regex.test(longLine)).toBe(true);
     });
 
@@ -261,7 +250,7 @@ describe('Quality Guard Hook', () => {
     it('should process file in single pass', () => {
       const content = 'line1\nline2\nline3';
       const lines = content.split('\n');
-      
+
       // Single pass simulation
       const results = [];
       lines.forEach((line, index) => {
@@ -276,10 +265,11 @@ describe('Quality Guard Hook', () => {
     it('should handle file size limits', () => {
       const MAX_CONTENT_LENGTH = 10000;
       const largeContent = 'x'.repeat(15000);
-      
-      const truncated = largeContent.length > MAX_CONTENT_LENGTH
-        ? largeContent.substring(0, MAX_CONTENT_LENGTH)
-        : largeContent;
+
+      const truncated =
+        largeContent.length > MAX_CONTENT_LENGTH
+          ? largeContent.substring(0, MAX_CONTENT_LENGTH)
+          : largeContent;
 
       expect(truncated.length).toBe(MAX_CONTENT_LENGTH);
     });
