@@ -10,9 +10,9 @@ const { spawn } = require('child_process');
 
 // Configuration constants
 const TIMEOUTS = {
-  QUICK: 5000,   // 5 seconds for quick checks
+  QUICK: 5000, // 5 seconds for quick checks
   NORMAL: 10000, // 10 seconds for normal operations
-  LONG: 30000,   // 30 seconds for complex operations
+  LONG: 30000, // 30 seconds for complex operations
   EXTRA_LONG: 60000 // 60 seconds for build/test operations
 };
 
@@ -23,14 +23,34 @@ const TIMEOUTS = {
 function findHookFile(hookName) {
   const possiblePaths = [
     // NPM installed package
-    path.join(process.cwd(), 'node_modules', '@hugsy', 'preset-kyle', 'hooks', hookName),
+    path.join(process.cwd(), 'node_modules', '@hugsylabs', 'preset-kyle', 'hooks', hookName),
     // Local development
     path.join(__dirname, hookName),
     // Workspace/monorepo setup
-    path.join(process.cwd(), '..', '..', 'node_modules', '@hugsy', 'preset-kyle', 'hooks', hookName),
+    path.join(
+      process.cwd(),
+      '..',
+      '..',
+      'node_modules',
+      '@hugsylabs',
+      'preset-kyle',
+      'hooks',
+      hookName
+    ),
     // Direct execution from preset directory
-    path.join(__dirname, '..', 'hooks', hookName)
+    path.join(__dirname, '..', 'hooks', hookName),
+    // Alternative: check if we're already in the hooks directory
+    path.join(process.cwd(), hookName)
   ];
+
+  // Try to resolve via require (handles global installations)
+  try {
+    const packagePath = require.resolve('@hugsylabs/preset-kyle/package.json');
+    const hookPath = path.join(path.dirname(packagePath), 'hooks', hookName);
+    possiblePaths.push(hookPath);
+  } catch {
+    // Package not installed via npm, that's fine
+  }
 
   for (const hookPath of possiblePaths) {
     if (fs.existsSync(hookPath)) {
@@ -46,12 +66,13 @@ function findHookFile(hookName) {
  */
 function sanitizeContent(content, maxLength = 10000) {
   if (!content) return '';
-  
+
   // Truncate if too long
-  let sanitized = content.length > maxLength 
-    ? content.substring(0, maxLength) + '\n... [content truncated]'
-    : content;
-  
+  let sanitized =
+    content.length > maxLength
+      ? `${content.substring(0, maxLength)}\n... [content truncated]`
+      : content;
+
   // Remove potential secrets (basic patterns)
   const secretPatterns = [
     /api[_-]?key\s*[:=]\s*['"]?[\w-]+['"]?/gi,
@@ -59,11 +80,11 @@ function sanitizeContent(content, maxLength = 10000) {
     /token\s*[:=]\s*['"]?[\w-]+['"]?/gi,
     /secret\s*[:=]\s*['"]?[\w-]+['"]?/gi
   ];
-  
+
   for (const pattern of secretPatterns) {
     sanitized = sanitized.replace(pattern, '[REDACTED]');
   }
-  
+
   return sanitized;
 }
 
@@ -104,7 +125,7 @@ function executeHook(hookPath, env, timeout) {
 async function main() {
   const hookName = process.argv[2];
   const timeout = parseInt(process.argv[3]) || TIMEOUTS.NORMAL;
-  
+
   if (!hookName) {
     console.error('❌ Hook name not provided');
     process.exit(1);
@@ -140,7 +161,7 @@ async function main() {
 
 // Export for testing
 if (require.main === module) {
-  main().catch(error => {
+  main().catch((error) => {
     console.error('❌ Unexpected error:', error);
     process.exit(1);
   });

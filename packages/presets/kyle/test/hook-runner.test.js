@@ -18,7 +18,8 @@ describe('Hook Runner', () => {
       const mockExists = vi.spyOn(fs, 'existsSync');
       mockExists.mockImplementation(
         (pathStr) =>
-          pathStr.includes('node_modules') && pathStr.includes('@hugsy/preset-kyle/hooks/test.js')
+          pathStr.includes('node_modules') &&
+          pathStr.includes('@hugsylabs/preset-kyle/hooks/test.js')
       );
 
       hookRunner = require('../hooks/hook-runner');
@@ -26,7 +27,7 @@ describe('Hook Runner', () => {
 
       if (result) {
         expect(result).toMatch(/node_modules/);
-        expect(result).toMatch(/@hugsy\/preset-kyle/);
+        expect(result).toMatch(/@hugsylabs\/preset-kyle/);
         expect(result).toMatch(/test\.js/);
       } else {
         // If running in test environment, may not find the path

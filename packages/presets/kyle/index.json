@@ -63,7 +63,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ./node_modules/@hugsy/preset-kyle/hooks/hook-runner.js quality-guard.js 10000",
+            "command": "kyle-quality-guard",
             "timeout": 10000
           }
         ]
@@ -73,7 +73,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ./node_modules/@hugsy/preset-kyle/hooks/hook-runner.js architecture-check.js 10000",
+            "command": "kyle-architecture-check",
             "timeout": 10000
           }
         ]
@@ -85,7 +85,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ./node_modules/@hugsy/preset-kyle/hooks/hook-runner.js auto-validate.js 60000",
+            "command": "kyle-auto-validate",
             "timeout": 60000
           }
         ]
@@ -96,7 +96,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ./node_modules/@hugsy/preset-kyle/hooks/hook-runner.js intent-analyzer.js 5000",
+            "command": "kyle-intent-analyzer",
             "timeout": 5000
           }
         ]

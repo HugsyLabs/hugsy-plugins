@@ -1,8 +1,14 @@
 {
-  "name": "@hugsy/preset-kyle",
+  "name": "@hugsylabs/preset-kyle",
   "version": "1.0.0",
   "description": "Kyle's personalized Hugsy preset with strict quality enforcement",
   "main": "index.json",
+  "bin": {
+    "kyle-quality-guard": "./hooks/quality-guard.js",
+    "kyle-architecture-check": "./hooks/architecture-check.js",
+    "kyle-auto-validate": "./hooks/auto-validate.js",
+    "kyle-intent-analyzer": "./hooks/intent-analyzer.js"
+  },
   "keywords": [
     "hugsy",
     "preset",
