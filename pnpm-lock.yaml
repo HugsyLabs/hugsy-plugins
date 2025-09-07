@@ -86,8 +86,6 @@ importers:
         specifier: '>=0.0.1'
         version: 0.0.6
 
-  packages/plugins/security-engineer: {}
-
   packages/plugins/test:
     dependencies:
       '@hugsylabs/hugsy':
@@ -100,11 +98,19 @@ importers:
         specifier: '>=0.0.1'
         version: 0.0.6
 
+  packages/presets/kyle:
+    dependencies:
+      '@hugsylabs/hugsy-core':
+        specifier: '*'
+        version: 0.3.0
+
   packages/presets/recommended:
     dependencies:
       '@hugsylabs/hugsy':
         specifier: '>=0.0.1'
         version: 0.0.6
+
+  packages/subagents/security-engineer: {}
 
 packages:
   /@ampproject/remapping@2.3.0:
@@ -796,10 +802,32 @@ packages:
       yaml: 2.8.1
     dev: false
 
+  /@hugsylabs/hugsy-core@0.3.0:
+    resolution:
+      {
+        integrity: sha512-45RZq5jLcl1lBX3CZ8aSq+q9C+6N9lcBBGTQoxmVdFrgqBnffOidEXZyvSbZJZ8CWdOu59MuOXPCgxxPDQAInA==
+      }
+    engines: { node: '>=18.0.0' }
+    dependencies:
+      '@hugsylabs/hugsy-types': 0.1.0
+      glob: 10.4.5
+      gray-matter: 4.0.3
+      ora: 8.2.0
+      yaml: 2.8.1
+    dev: false
+
   /@hugsylabs/hugsy-types@0.0.6:
     resolution:
       {
         integrity: sha512-YZxCk7y5jN6NTXG6q53pa3GZsdbLDi5kAGbTlUJKOxYgd3gsI1vNcsbl9+9wczCPt2QW2Ayj55am5Vv8ibLhnA==
+      }
+    engines: { node: '>=18.0.0' }
+    dev: false
+
+  /@hugsylabs/hugsy-types@0.1.0:
+    resolution:
+      {
+        integrity: sha512-ddopLpn8oYX0z/aDj0L+ULkbD9HAmbVsU6NgLLTmI0KOaQc88CYT1ExPE2UZmk04OXOYrrVB6SWDcNm6WAkycg==
       }
     engines: { node: '>=18.0.0' }
     dev: false
@@ -1651,7 +1679,6 @@ packages:
       }
     dependencies:
       sprintf-js: 1.0.3
-    dev: true
 
   /argparse@2.0.1:
     resolution:
@@ -2128,7 +2155,6 @@ packages:
       }
     engines: { node: '>=4' }
     hasBin: true
-    dev: true
 
   /esquery@1.6.0:
     resolution:
@@ -2199,6 +2225,16 @@ packages:
       signal-exit: 4.1.0
       strip-final-newline: 3.0.0
     dev: true
+
+  /extend-shallow@2.0.1:
+    resolution:
+      {
+        integrity: sha512-zCnTtlxNoAiDc3gqY2aYAWFx7XWWiasuF2K8Me5WbN8otHKTUKBwjPtNpRs/rbUZm7KxWAaNj7P1a/p52GbVug==
+      }
+    engines: { node: '>=0.10.0' }
+    dependencies:
+      is-extendable: 0.1.1
+    dev: false
 
   /extendable-error@0.1.7:
     resolution:
@@ -2481,6 +2517,19 @@ packages:
       }
     dev: true
 
+  /gray-matter@4.0.3:
+    resolution:
+      {
+        integrity: sha512-5v6yZd4JK3eMI3FqqCouswVqwugaA9r4dNZB1wwcmrD02QkV5H0y7XBQW8QwQqEaZY1pM9aqORSORhJRdNK44Q==
+      }
+    engines: { node: '>=6.0' }
+    dependencies:
+      js-yaml: 3.14.1
+      kind-of: 6.0.3
+      section-matter: 1.0.0
+      strip-bom-string: 1.0.0
+    dev: false
+
   /has-flag@4.0.0:
     resolution:
       {
@@ -2583,6 +2632,14 @@ packages:
         integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==
       }
     dev: true
+
+  /is-extendable@0.1.1:
+    resolution:
+      {
+        integrity: sha512-5BMULNob1vgFX6EjQw5izWDxrecWK9AM72rugNr0TFldMOi0fj6Jk+zeKIt0xGj4cEfQIJth4w3OKWOJ4f+AFw==
+      }
+    engines: { node: '>=0.10.0' }
+    dev: false
 
   /is-extglob@2.1.1:
     resolution:
@@ -2764,7 +2821,6 @@ packages:
     dependencies:
       argparse: 1.0.10
       esprima: 4.0.1
-    dev: true
 
   /js-yaml@4.1.0:
     resolution:
@@ -2814,6 +2870,14 @@ packages:
     dependencies:
       json-buffer: 3.0.1
     dev: true
+
+  /kind-of@6.0.3:
+    resolution:
+      {
+        integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
+      }
+    engines: { node: '>=0.10.0' }
+    dev: false
 
   /kleur@3.0.3:
     resolution:
@@ -3601,6 +3665,17 @@ packages:
       }
     dev: true
 
+  /section-matter@1.0.0:
+    resolution:
+      {
+        integrity: sha512-vfD3pmTzGpufjScBh50YHKzEu2lxBWhVEHsNGoEXmCmn2hKGfeNLYMzCJpe8cD7gqX7TJluOVpBkAequ6dgMmA==
+      }
+    engines: { node: '>=4' }
+    dependencies:
+      extend-shallow: 2.0.1
+      kind-of: 6.0.3
+    dev: false
+
   /semver@7.7.2:
     resolution:
       {
@@ -3700,7 +3775,6 @@ packages:
       {
         integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==
       }
-    dev: true
 
   /stackback@0.0.2:
     resolution:
@@ -3784,6 +3858,14 @@ packages:
     engines: { node: '>=12' }
     dependencies:
       ansi-regex: 6.2.0
+
+  /strip-bom-string@1.0.0:
+    resolution:
+      {
+        integrity: sha512-uCC2VHvQRYu+lMh4My/sFNmF2klFymLX1wHJeXnbEJERpV/ZsVuonzerjfrGpIGF7LBVa1O7i9kjiWvJiFck8g==
+      }
+    engines: { node: '>=0.10.0' }
+    dev: false
 
   /strip-bom@3.0.0:
     resolution:

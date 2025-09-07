@@ -1,0 +1,42 @@
+{
+  "name": "@hugsy/preset-kyle",
+  "version": "1.0.0",
+  "description": "Kyle's personalized Hugsy preset with strict quality enforcement",
+  "main": "index.json",
+  "keywords": [
+    "hugsy",
+    "preset",
+    "claude-code",
+    "typescript",
+    "quality",
+    "testing",
+    "architecture"
+  ],
+  "author": "Kyle",
+  "license": "MIT",
+  "files": [
+    "index.json",
+    "hooks/**/*.js",
+    "commands/**/*.md",
+    "agents/**/*.md",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node test-preset.js",
+    "validate": "node validate-preset.js"
+  },
+  "peerDependencies": {
+    "@hugsylabs/hugsy-core": "*"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hugsylabs/hugsy-plugins.git",
+    "directory": "packages/presets/kyle"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

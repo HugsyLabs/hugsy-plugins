@@ -1,0 +1,124 @@
+{
+  "name": "kyle",
+  "version": "1.0.0",
+  "description": "Kyle's personalized preset with strict quality enforcement and architecture protection",
+
+  "permissions": {
+    "allow": [
+      "Read(**)",
+      "Write(**/*.{ts,tsx,js,jsx,json,md,css,scss,less})",
+      "Edit(**)",
+      "MultiEdit(**)",
+      "Bash(pnpm *)",
+      "Bash(npm run *)",
+      "Bash(npm test*)",
+      "Bash(yarn *)",
+      "Bash(git *)",
+      "Bash(tsc *)",
+      "Bash(vitest *)",
+      "Bash(jest *)",
+      "Bash(eslint *)",
+      "Grep(**)",
+      "Glob(**)",
+      "TodoWrite",
+      "Task",
+      "NotebookEdit",
+      "WebFetch",
+      "WebSearch"
+    ],
+    "ask": [
+      "Write(**/package.json)",
+      "Write(**/package-lock.json)",
+      "Write(**/yarn.lock)",
+      "Write(**/pnpm-lock.yaml)",
+      "Write(**/.github/**)",
+      "Bash(npm install *)",
+      "Bash(pnpm add *)",
+      "Bash(yarn add *)",
+      "Bash(rm -rf *)",
+      "Bash(npx *)"
+    ]
+  },
+
+  "env": {
+    "NODE_ENV": "development",
+    "REACT_APP_ENV": "development",
+    "DEBUG": "false"
+  },
+
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"require('@hugsy/preset-kyle/hooks/quality-guard.js')\"",
+            "timeout": 10000
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"require('@hugsy/preset-kyle/hooks/architecture-check.js')\"",
+            "timeout": 10000
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"require('@hugsy/preset-kyle/hooks/auto-validate.js')\"",
+            "timeout": 60000
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"require('@hugsy/preset-kyle/hooks/intent-analyzer.js')\"",
+            "timeout": 5000
+          }
+        ]
+      }
+    ]
+  },
+
+  "slashCommands": {
+    "files": [
+      "./commands/check-quality.md",
+      "./commands/fix-types.md",
+      "./commands/check-arch.md",
+      "./commands/validate-all.md",
+      "./commands/show-coverage.md"
+    ]
+  },
+
+  "subagents": {
+    "files": [
+      "./agents/quality-enforcer.md",
+      "./agents/architecture-guardian.md",
+      "./agents/test-master.md"
+    ]
+  },
+
+  "metadata": {
+    "author": "Kyle",
+    "created": "2024-01-01",
+    "tags": ["quality", "typescript", "testing", "architecture"],
+    "requirements": {
+      "node": ">=16.0.0",
+      "typescript": ">=4.5.0"
+    }
+  }
+}

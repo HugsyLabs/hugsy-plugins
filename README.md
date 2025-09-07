@@ -5,6 +5,15 @@ Official plugin ecosystem for [Hugsy](https://github.com/HugsyLabs/hugsy) - Conf
 [![CI](https://github.com/HugsyLabs/hugsy-plugins/actions/workflows/ci.yml/badge.svg)](https://github.com/HugsyLabs/hugsy-plugins/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+## 📖 Getting Started
+
+New to Hugsy development? Start here:
+
+- **[Developer Guide](https://github.com/HugsyLabs/hugsy/blob/main/docs/DEVELOPER.md)** - Learn how to create presets, plugins, commands, and subagents
+- **[API Reference](https://github.com/HugsyLabs/hugsy/blob/main/docs/DEVELOPER.md#api-reference)** - Complete API documentation
+
+Each package in this repository includes its own README with specific usage instructions.
+
 ## 📦 Available Packages
 
 ### Language Plugins
