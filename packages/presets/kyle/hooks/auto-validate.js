@@ -6,36 +6,8 @@
 
 const { exec } = require('child_process');
 const util = require('util');
-// const path = require('path'); // Reserved for future use
+const { VALIDATION_CONFIG, EXIT_CODES } = require('./config');
 const execPromise = util.promisify(exec);
-
-// Validation configuration
-const VALIDATION_CONFIG = {
-  typescript: {
-    enabled: true,
-    command: 'tsc --noEmit',
-    timeout: 30000,
-    requiredCoverage: 0
-  },
-  tests: {
-    enabled: true,
-    command: 'npm test',
-    timeout: 60000,
-    requiredCoverage: 85
-  },
-  build: {
-    enabled: true,
-    command: 'npm run build',
-    timeout: 60000,
-    requiredCoverage: 0
-  },
-  lint: {
-    enabled: true,
-    command: 'npm run lint',
-    timeout: 30000,
-    requiredCoverage: 0
-  }
-};
 
 async function runCommand(name, config) {
   try {

@@ -5,6 +5,7 @@
  */
 
 const path = require('path');
+const { ERROR_TYPES, EXIT_CODES } = require('./config');
 
 // Project architecture mapping - defines responsibilities of each module
 const ARCHITECTURE_MAP = {
@@ -92,9 +93,11 @@ function checkArchitecture(filePath, content, prompt) {
   // 1. Check if file location is correct
   for (const [location, rules] of Object.entries(ARCHITECTURE_MAP)) {
     if (filePath.includes(location)) {
-      // Check for forbidden content
+      // Check for forbidden content with smarter pattern matching
       for (const forbidden of rules.forbidden) {
-        if (content.toLowerCase().includes(forbidden.toLowerCase())) {
+        // Create a word boundary pattern for more accurate matching
+        const forbiddenPattern = new RegExp(`\b${forbidden}\b`, 'i');
+        if (forbiddenPattern.test(content)) {
           violations.push({
             type: 'architecture',
             message: rules.warning,
@@ -120,12 +123,19 @@ function checkArchitecture(filePath, content, prompt) {
   }
 
   // 2. Check for duplicate implementation of existing features
+  // Use case-insensitive search for prompts but preserve original case for content analysis
   const lowerPrompt = (prompt || '').toLowerCase();
-  const lowerContent = content.toLowerCase();
-
+  
   // Detect by keywords
   for (const [keyword, feature] of Object.entries(DUPLICATION_KEYWORDS)) {
-    if (lowerPrompt.includes(keyword) || lowerContent.includes(keyword)) {
+    // Check prompt case-insensitively
+    const keywordInPrompt = lowerPrompt.includes(keyword.toLowerCase());
+    
+    // Check content more carefully - look for actual patterns, not just keywords
+    const keywordPattern = new RegExp(`\b${keyword.replace(/\s+/g, '\\s*')}\b`, 'i');
+    const keywordInContent = keywordPattern.test(content);
+    
+    if (keywordInPrompt || keywordInContent) {
       const existing = EXISTING_FEATURES[feature];
       if (existing && !filePath.includes(existing.location)) {
         warnings.push({
@@ -230,9 +240,11 @@ function main() {
 
     process.exit(0);
   } catch (error) {
-    console.error('❌ Architecture Check encountered an error:', error.message);
+    const errorType = error.message.includes('timeout') ? ERROR_TYPES.TIMEOUT : ERROR_TYPES.UNKNOWN;
+    console.error(`❌ Architecture Check error [${errorType}]:`, error.message);
+    
     // Allow operation to continue on error to avoid blocking development
-    process.exit(0);
+    process.exit(EXIT_CODES.SUCCESS);
   }
 }
 

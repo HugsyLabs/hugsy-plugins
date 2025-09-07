@@ -5,6 +5,7 @@
  */
 
 const path = require('path');
+const { FILE_LIMITS, ERROR_TYPES, EXIT_CODES } = require('./config');
 
 // Code patterns that are absolutely forbidden
 const FORBIDDEN_PATTERNS = [
@@ -79,7 +80,7 @@ function checkContent(content, filePath) {
   // Determine applicable file-specific rules once
   const applicableFileRules = [];
   for (const [pattern, rules] of Object.entries(FILE_SPECIFIC_RULES)) {
-    if (filePath.match(pattern.replace('*', '.*'))) {
+    if (filePath.match(pattern.replace(/\*/g, '.*'))) {
       applicableFileRules.push(...rules);
     }
   }
@@ -122,7 +123,13 @@ function main() {
     // Skip if no file information (might be other type of hook call)
     if (!filePath || !content) {
       // Silent skip for non-file operations
-      process.exit(0);
+      process.exit(EXIT_CODES.SUCCESS);
+    }
+    
+    // Check content size limits
+    if (content.length > FILE_LIMITS.MAX_CONTENT_LENGTH) {
+      console.warn(`⚠️ File too large (${content.length} chars), checking first ${FILE_LIMITS.MAX_CONTENT_LENGTH} characters only`);
+      content = content.substring(0, FILE_LIMITS.MAX_CONTENT_LENGTH);
     }
 
     // Only check code files
@@ -163,9 +170,17 @@ function main() {
 
     process.exit(0);
   } catch (error) {
-    console.error('❌ Quality Guard encountered an error:', error.message);
-    // Allow operation to continue on error to avoid blocking development
-    process.exit(0);
+    const errorType = error.message.includes('timeout') ? ERROR_TYPES.TIMEOUT : ERROR_TYPES.UNKNOWN;
+    console.error(`❌ Quality Guard error [${errorType}]:`, error.message);
+    
+    // Exit based on error type
+    if (errorType === ERROR_TYPES.TIMEOUT) {
+      console.error('💡 Consider optimizing file size or increasing timeout');
+      process.exit(EXIT_CODES.TIMEOUT);
+    }
+    
+    // Allow operation to continue on unknown errors to avoid blocking development
+    process.exit(EXIT_CODES.SUCCESS);
   }
 }
 
