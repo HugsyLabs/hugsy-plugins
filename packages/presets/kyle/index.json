@@ -26,6 +26,16 @@
       "WebFetch",
       "WebSearch"
     ],
+    "deny": [
+      "Write(**/node_modules/**)",
+      "Write(**/.git/**)",
+      "Write(**/dist/**)",
+      "Write(**/build/**)",
+      "Write(**/coverage/**)",
+      "Bash(rm -rf /)",
+      "Bash(sudo *)",
+      "Bash(npm publish)"
+    ],
     "ask": [
       "Write(**/package.json)",
       "Write(**/package-lock.json)",
