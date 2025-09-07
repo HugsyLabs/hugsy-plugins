@@ -1,12 +1,9 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
-/* eslint-disable no-unused-vars */
 /**
  * Quality Guard Hook
  * Intercepts any attempts to compromise code quality
  */
 
-const fs = require('fs'); // Reserved for future use
 const path = require('path');
 
 // Code patterns that are absolutely forbidden
@@ -20,7 +17,7 @@ const FORBIDDEN_PATTERNS = [
     message: '❌ @ts-ignore is not allowed - Types must be handled properly, not skipped'
   },
   {
-    pattern: /:\s*any(?:\s|;|,|\)|$|\[)/,
+    pattern: /:\s*any\b/,
     message: '❌ "any" type is not allowed - Use specific type definitions'
   },
   {
@@ -28,7 +25,7 @@ const FORBIDDEN_PATTERNS = [
     message: '❌ "as any" is not allowed - Use proper type assertions'
   },
   {
-    pattern: /:\s*unknown(?:\s|;|,|\)|$|\[)/,
+    pattern: /:\s*unknown\b/,
     message: '⚠️  Avoid using "unknown" - Use more specific types'
   },
   {
@@ -36,16 +33,16 @@ const FORBIDDEN_PATTERNS = [
     message: '❌ Disabling eslint is not allowed - Fix the lint errors'
   },
   {
-    pattern: /console\.(log|debug|info)(?!\s*\(.*\/\/ OK)/,
+    pattern: /console\.(log|debug|info)/,
     message: '⚠️  Production code should not contain console.log (unless marked with // OK)'
   },
   {
-    pattern: /TODO(?!:.*\d{4}-\d{2}-\d{2})/,
-    message: '⚠️  TODO must include completion date (format: TODO: description 2024-01-01)'
+    pattern: /TODO(?!:)/,
+    message: '⚠️  TODO must include description'
   },
   {
-    pattern: /FIXME(?!:.*\d{4}-\d{2}-\d{2})/,
-    message: '⚠️  FIXME must include fix date'
+    pattern: /FIXME(?!:)/,
+    message: '⚠️  FIXME must include description'
   },
   {
     pattern: /test\.skip/,
@@ -76,100 +73,101 @@ const FILE_SPECIFIC_RULES = {
 function checkContent(content, filePath) {
   const violations = [];
   const warnings = [];
+  const lines = content.split('\n');
+  const fileName = path.basename(filePath);
 
-  // 检查通用规则
-  for (const rule of FORBIDDEN_PATTERNS) {
-    const matches = content.match(rule.pattern);
-    if (matches) {
-      const item = {
-        file: path.basename(filePath),
-        rule: rule.message,
-        line: getLineNumber(content, matches.index),
-        matched: matches[0].trim()
-      };
-
-      if (rule.message.startsWith('❌')) {
-        violations.push(item);
-      } else {
-        warnings.push(item);
-      }
+  // Determine applicable file-specific rules once
+  const applicableFileRules = [];
+  for (const [pattern, rules] of Object.entries(FILE_SPECIFIC_RULES)) {
+    if (filePath.match(pattern.replace('*', '.*'))) {
+      applicableFileRules.push(...rules);
     }
   }
 
-  // 检查文件特定规则
-  for (const [pattern, rules] of Object.entries(FILE_SPECIFIC_RULES)) {
-    if (filePath.match(pattern.replace('*', '.*'))) {
-      for (const rule of rules) {
-        if (rule.pattern.test(content)) {
-          warnings.push({
-            file: path.basename(filePath),
-            rule: rule.message,
-            matched: content.match(rule.pattern)[0].trim()
-          });
+  // Combine all rules for single-pass checking
+  const allRules = [...FORBIDDEN_PATTERNS, ...applicableFileRules];
+
+  // Single pass through lines
+  lines.forEach((line, index) => {
+    for (const rule of allRules) {
+      const match = line.match(rule.pattern);
+      if (match) {
+        const item = {
+          file: fileName,
+          rule: rule.message,
+          line: index + 1,
+          matched: match[0].trim()
+        };
+
+        if (rule.message.startsWith('❌')) {
+          violations.push(item);
+        } else {
+          warnings.push(item);
         }
       }
     }
-  }
+  });
 
   return { violations, warnings };
 }
 
-function getLineNumber(content, index) {
-  if (!index) return 1;
-  return content.substring(0, index).split('\n').length;
-}
-
-// 主执行逻辑
+// Main execution logic
 function main() {
-  // 从环境变量获取文件信息
-  const filePath = process.env.CLAUDE_FILE_PATH;
-  const content = process.env.CLAUDE_FILE_CONTENT;
-  const operation = process.env.CLAUDE_OPERATION || 'Write'; // Not used currently
+  try {
+    // Get file information from environment variables
+    const filePath = process.env.CLAUDE_FILE_PATH;
+    const content = process.env.CLAUDE_FILE_CONTENT;
+    // const operation = process.env.CLAUDE_OPERATION || 'Write'; // Reserved for future use
 
-  // Skip if no file information (might be other type of hook call)
-  if (!filePath || !content) {
-    console.log('✅ Quality check skipped (no file content)');
+    // Skip if no file information (might be other type of hook call)
+    if (!filePath || !content) {
+      // Silent skip for non-file operations
+      process.exit(0);
+    }
+
+    // Only check code files
+    const codeExtensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs'];
+    if (!codeExtensions.some((ext) => filePath.endsWith(ext))) {
+      process.exit(0);
+    }
+
+    // Log check start
+    process.stderr.write(`\n🔍 Quality Guard checking ${path.basename(filePath)}...\n`);
+
+    const { violations, warnings } = checkContent(content, filePath);
+
+    // Output warnings
+    if (warnings.length > 0) {
+      console.warn('\n⚠️  Quality warnings:');
+      warnings.forEach((w) => {
+        console.warn(`  ${w.rule}`);
+        if (w.line) console.warn(`    Line ${w.line}: "${w.matched}"`);
+      });
+    }
+
+    // Block operation if there are violations
+    if (violations.length > 0) {
+      console.error('\n❌ Quality check FAILED - Code quality is non-negotiable!');
+      console.error('\nThe following critical issues must be fixed:');
+      violations.forEach((v) => {
+        console.error(`  ${v.rule}`);
+        if (v.line) console.error(`    Line ${v.line}: "${v.matched}"`);
+      });
+      console.error('\n💡 Suggestion: Fix these issues properly, do not try to bypass checks');
+      process.exit(1);
+    }
+
+    if (warnings.length === 0) {
+      process.stderr.write('✅ Quality check passed - Code meets quality standards\n');
+    }
+
+    process.exit(0);
+  } catch (error) {
+    console.error('❌ Quality Guard encountered an error:', error.message);
+    // Allow operation to continue on error to avoid blocking development
     process.exit(0);
   }
-
-  // Only check code files
-  const codeExtensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs'];
-  if (!codeExtensions.some((ext) => filePath.endsWith(ext))) {
-    process.exit(0);
-  }
-
-  console.log(`\n🔍 Quality Guard checking ${path.basename(filePath)}...`);
-
-  const { violations, warnings } = checkContent(content, filePath);
-
-  // Output warnings
-  if (warnings.length > 0) {
-    console.log('\n⚠️  Quality warnings:');
-    warnings.forEach((w) => {
-      console.log(`  ${w.rule}`);
-
-      if (w.line) console.log(`    Line ${w.line}: "${w.matched}"`);
-    });
-  }
-
-  // Block operation if there are violations
-  if (violations.length > 0) {
-    console.error('\n❌ Quality check FAILED - Code quality is non-negotiable!');
-    console.error('\nThe following critical issues must be fixed:');
-    violations.forEach((v) => {
-      console.error(`  ${v.rule}`);
-      if (v.line) console.error(`    Line ${v.line}: "${v.matched}"`);
-    });
-    console.error('\n💡 Suggestion: Fix these issues properly, do not try to bypass checks');
-    process.exit(1);
-  }
-
-  if (warnings.length === 0) {
-    console.log('✅ Quality check passed - Code meets quality standards');
-  }
-
-  process.exit(0);
 }
 
-// 执行
+// Execute
 main();

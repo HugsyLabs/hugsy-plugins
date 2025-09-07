@@ -63,7 +63,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"require('@hugsy/preset-kyle/hooks/quality-guard.js')\"",
+            "command": "node ./node_modules/@hugsy/preset-kyle/hooks/quality-guard.js",
             "timeout": 10000
           }
         ]
@@ -73,7 +73,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"require('@hugsy/preset-kyle/hooks/architecture-check.js')\"",
+            "command": "node ./node_modules/@hugsy/preset-kyle/hooks/architecture-check.js",
             "timeout": 10000
           }
         ]
@@ -85,7 +85,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"require('@hugsy/preset-kyle/hooks/auto-validate.js')\"",
+            "command": "node ./node_modules/@hugsy/preset-kyle/hooks/auto-validate.js",
             "timeout": 60000
           }
         ]
@@ -96,7 +96,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"require('@hugsy/preset-kyle/hooks/intent-analyzer.js')\"",
+            "command": "node ./node_modules/@hugsy/preset-kyle/hooks/intent-analyzer.js",
             "timeout": 5000
           }
         ]

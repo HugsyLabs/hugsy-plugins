@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
-/* eslint-disable no-unused-vars */
 /**
  * Auto Validate Hook
  * Automatically runs validation after code changes
@@ -8,8 +6,7 @@
 
 const { exec } = require('child_process');
 const util = require('util');
-const path = require('path'); // Reserved for future use
-const fs = require('fs'); // Reserved for future use
+// const path = require('path'); // Reserved for future use
 const execPromise = util.promisify(exec);
 
 // Validation configuration
@@ -84,15 +81,15 @@ async function runCommand(name, config) {
 
 async function validate() {
   const filePath = process.env.CLAUDE_FILE_PATH || '';
-  const operation = process.env.CLAUDE_OPERATION || ''; // Not used currently
+  // const operation = process.env.CLAUDE_OPERATION || ''; // Reserved for future use
 
   // Skip validation for non-code files
   if (!filePath.match(/\.(ts|tsx|js|jsx|json)$/)) {
-    console.log('✅ Validation skipped (not a code file)');
+    process.stderr.write('✅ Validation skipped (not a code file)\n');
     process.exit(0);
   }
 
-  console.log('\n🔍 Running automatic validation...\n');
+  process.stderr.write('\n🔍 Running automatic validation...\n\n');
 
   const results = {};
   let hasErrors = false;
@@ -100,12 +97,12 @@ async function validate() {
 
   // 1. TypeScript check
   if (VALIDATION_CONFIG.typescript.enabled && filePath.match(/\.(ts|tsx)$/)) {
-    console.log('📘 TypeScript check...');
+    process.stderr.write('📘 TypeScript check...\n');
     const result = await runCommand('typescript', VALIDATION_CONFIG.typescript);
     results.typescript = result;
 
     if (result.success) {
-      console.log('  ✅ TypeScript compilation successful');
+      process.stderr.write('  ✅ TypeScript compilation successful\n');
     } else {
       console.error('  ❌ TypeScript compilation failed');
       if (result.stderr) {
@@ -122,24 +119,24 @@ async function validate() {
     VALIDATION_CONFIG.tests.enabled &&
     (filePath.includes('.test.') || filePath.includes('.spec.'))
   ) {
-    console.log('\n🧪 Running tests...');
+    process.stderr.write('\n🧪 Running tests...\n');
     const result = await runCommand('tests', VALIDATION_CONFIG.tests);
     results.tests = result;
 
     if (result.success) {
-      console.log('  ✅ Tests passed');
+      process.stderr.write('  ✅ Tests passed\n');
 
       // Check coverage
       if (result.coverage !== null) {
         if (result.coverage >= VALIDATION_CONFIG.tests.requiredCoverage) {
-          console.log(
-            `  ✅ Coverage: ${result.coverage.toFixed(1)}% (required: ${VALIDATION_CONFIG.tests.requiredCoverage}%)`
+          process.stderr.write(
+            `  ✅ Coverage: ${result.coverage.toFixed(1)}% (required: ${VALIDATION_CONFIG.tests.requiredCoverage}%)\n`
           );
         } else {
-          console.log(
+          console.warn(
             `  ⚠️  Coverage: ${result.coverage.toFixed(1)}% (required: ${VALIDATION_CONFIG.tests.requiredCoverage}%)`
           );
-          console.log('  💡 Add more tests to meet coverage requirements');
+          console.warn('  💡 Add more tests to meet coverage requirements');
           hasWarnings = true;
         }
       }
@@ -151,15 +148,15 @@ async function validate() {
 
   // 3. Lint check
   if (VALIDATION_CONFIG.lint.enabled) {
-    console.log('\n🎨 Lint check...');
+    process.stderr.write('\n🎨 Lint check...\n');
     const result = await runCommand('lint', VALIDATION_CONFIG.lint);
     results.lint = result;
 
     if (result.success) {
-      console.log('  ✅ Lint check passed');
+      process.stderr.write('  ✅ Lint check passed\n');
     } else {
       // Lint errors are warnings, not blocking errors
-      console.log('  ⚠️  Lint issues found');
+      console.warn('  ⚠️  Lint issues found');
       if (result.stdout) {
         const lines = result.stdout.split('\n').slice(0, 5);
         lines.forEach((line) => console.warn(`    ${line}`));
@@ -175,12 +172,12 @@ async function validate() {
     !filePath.includes('.test.') &&
     !filePath.includes('.spec.')
   ) {
-    console.log('\n🔨 Build check...');
+    process.stderr.write('\n🔨 Build check...\n');
     const result = await runCommand('build', VALIDATION_CONFIG.build);
     results.build = result;
 
     if (result.success) {
-      console.log('  ✅ Build successful');
+      process.stderr.write('  ✅ Build successful\n');
     } else {
       console.error('  ❌ Build failed');
       hasErrors = true;
@@ -188,17 +185,17 @@ async function validate() {
   }
 
   // Summary
-  console.log(`\n${'='.repeat(50)}`);
+  process.stderr.write(`\n${'='.repeat(50)}\n`);
 
   if (hasErrors) {
     console.error('\n❌ Validation FAILED - Critical issues must be fixed!');
     console.error('\n💡 Fix the errors above before continuing');
     process.exit(1);
   } else if (hasWarnings) {
-    console.log('\n⚠️  Validation passed with warnings');
-    console.log('\n💡 Consider addressing the warnings for better code quality');
+    console.warn('\n⚠️  Validation passed with warnings');
+    console.warn('\n💡 Consider addressing the warnings for better code quality');
   } else {
-    console.log('\n✅ All validations passed successfully!');
+    process.stderr.write('\n✅ All validations passed successfully!\n');
   }
 
   process.exit(0);

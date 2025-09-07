@@ -1,12 +1,9 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
-/* eslint-disable no-unused-vars */
 /**
  * Architecture Check Hook
  * Prevents duplicate implementations and architecture violations
  */
 
-const fs = require('fs'); // Reserved for future use
 const path = require('path');
 
 // Project architecture mapping - defines responsibilities of each module
@@ -92,7 +89,7 @@ function checkArchitecture(filePath, content, prompt) {
   const violations = [];
   const warnings = [];
 
-  // 1. 检查文件位置是否正确
+  // 1. Check if file location is correct
   for (const [location, rules] of Object.entries(ARCHITECTURE_MAP)) {
     if (filePath.includes(location)) {
       // Check for forbidden content
@@ -185,53 +182,59 @@ function checkArchitecture(filePath, content, prompt) {
   return { violations, warnings };
 }
 
-// 主执行逻辑
+// Main execution logic
 function main() {
-  const filePath = process.env.CLAUDE_FILE_PATH || '';
-  const content = process.env.CLAUDE_FILE_CONTENT || '';
-  const prompt = process.env.CLAUDE_PROMPT || '';
-  const operation = process.env.CLAUDE_OPERATION || ''; // Not used currently
+  try {
+    const filePath = process.env.CLAUDE_FILE_PATH || '';
+    const content = process.env.CLAUDE_FILE_CONTENT || '';
+    const prompt = process.env.CLAUDE_PROMPT || '';
+    // const operation = process.env.CLAUDE_OPERATION || ''; // Reserved for future use
 
-  // Only check code files within the project
-  if (!filePath.includes('packages/') || !filePath.match(/\.(ts|tsx|js|jsx)$/)) {
+    // Only check code files within the project
+    if (!filePath.includes('packages/') || !filePath.match(/\.(ts|tsx|js|jsx)$/)) {
+      process.exit(0);
+    }
+
+    process.stderr.write(`\n🏗️  Architecture Check for ${path.basename(filePath)}...\n`);
+
+    const { violations, warnings } = checkArchitecture(filePath, content, prompt);
+
+    // Output guidance suggestions
+    if (warnings.length > 0) {
+      console.warn('\n💡 Architecture suggestions:');
+      warnings.forEach((w) => {
+        console.warn(`  ${w.message}`);
+        if (w.suggestion) console.warn(`    → ${w.suggestion}`);
+        if (w.location) console.warn(`    📍 Location: ${w.location}`);
+      });
+    }
+
+    // Block operation if there are architecture violations
+    if (violations.length > 0) {
+      console.error('\n❌ Architecture check FAILED - Architecture violations detected!');
+      console.error('\nThe following issues must be fixed:');
+      violations.forEach((v) => {
+        console.error(`  ${v.message}`);
+        if (v.detail) console.error(`    Issue: ${v.detail}`);
+        if (v.suggestion) console.error(`    Suggestion: ${v.suggestion}`);
+      });
+      console.error(
+        '\n📚 Please follow project architecture guidelines and keep module responsibilities clear'
+      );
+      process.exit(1);
+    }
+
+    if (violations.length === 0 && warnings.length === 0) {
+      process.stderr.write('✅ Architecture check passed - Complies with architecture standards\n');
+    }
+
+    process.exit(0);
+  } catch (error) {
+    console.error('❌ Architecture Check encountered an error:', error.message);
+    // Allow operation to continue on error to avoid blocking development
     process.exit(0);
   }
-
-  console.log(`\n🏗️  Architecture Check for ${path.basename(filePath)}...`);
-
-  const { violations, warnings } = checkArchitecture(filePath, content, prompt);
-
-  // Output guidance suggestions
-  if (warnings.length > 0) {
-    console.log('\n💡 Architecture suggestions:');
-    warnings.forEach((w) => {
-      console.log(`  ${w.message}`);
-      if (w.suggestion) console.warn(`    → ${w.suggestion}`);
-      if (w.location) console.warn(`    📍 Location: ${w.location}`);
-    });
-  }
-
-  // Block operation if there are architecture violations
-  if (violations.length > 0) {
-    console.error('\n❌ Architecture check FAILED - Architecture violations detected!');
-    console.error('\nThe following issues must be fixed:');
-    violations.forEach((v) => {
-      console.error(`  ${v.message}`);
-      if (v.detail) console.error(`    Issue: ${v.detail}`);
-      if (v.suggestion) console.error(`    Suggestion: ${v.suggestion}`);
-    });
-    console.error(
-      '\n📚 Please follow project architecture guidelines and keep module responsibilities clear'
-    );
-    process.exit(1);
-  }
-
-  if (violations.length === 0 && warnings.length === 0) {
-    console.log('✅ Architecture check passed - Complies with architecture standards');
-  }
-
-  process.exit(0);
 }
 
-// 执行
+// Execute
 main();

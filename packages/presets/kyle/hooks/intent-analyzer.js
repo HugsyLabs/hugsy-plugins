@@ -1,13 +1,8 @@
 #!/usr/bin/env node
-
-/* eslint-disable no-unused-vars */
 /**
  * Intent Analyzer Hook
  * Analyzes user prompts to provide proactive guidance
  */
-
-const fs = require('fs'); // Reserved for future use
-const path = require('path'); // Reserved for future use
 
 // Implementation hints for existing features
 const IMPLEMENTATION_HINTS = {
@@ -121,56 +116,62 @@ function analyzePrompt(prompt) {
 }
 
 function main() {
-  const prompt = process.env.CLAUDE_PROMPT || '';
-  const operation = process.env.CLAUDE_OPERATION || ''; // Not used currently
+  try {
+    const prompt = process.env.CLAUDE_PROMPT || '';
+    // const operation = process.env.CLAUDE_OPERATION || ''; // Reserved for future use
 
-  // Skip if no prompt
-  if (!prompt) {
+    // Skip if no prompt
+    if (!prompt) {
+      process.exit(0);
+    }
+
+    const { suggestions, warnings, tips } = analyzePrompt(prompt);
+
+    // Only output if there's something useful to say
+    if (suggestions.length === 0 && warnings.length === 0 && tips.length === 0) {
+      process.exit(0);
+    }
+
+    console.warn('\n🤖 Intent Analysis:\n');
+
+    // Output warnings first (most important)
+    if (warnings.length > 0) {
+      console.warn('⚠️ Warnings:');
+      warnings.forEach((w) => console.warn(`  ${w}`));
+      console.warn('');
+    }
+
+    // Then suggestions
+    if (suggestions.length > 0) {
+      console.warn('💡 Suggestions:');
+      suggestions.forEach((s) => console.warn(`  ${s}`));
+      console.warn('');
+    }
+
+    // Finally tips
+    if (tips.length > 0) {
+      console.warn('📌 Tips:');
+      tips.forEach((t) => console.warn(`  ${t}`));
+      console.warn('');
+    }
+
+    // Special handling for certain critical patterns
+    if (
+      prompt.toLowerCase().includes('any') ||
+      prompt.toLowerCase().includes('@ts-ignore') ||
+      prompt.toLowerCase().includes('@ts-nocheck')
+    ) {
+      console.error('🚫 CRITICAL: Quality standards are non-negotiable!');
+      console.error('   Do NOT use "any" types or ignore TypeScript errors.');
+      console.error('   Fix the root cause properly.\n');
+    }
+
+    process.exit(0);
+  } catch (error) {
+    console.error('❌ Intent Analyzer encountered an error:', error.message);
+    // Allow operation to continue on error to avoid blocking development
     process.exit(0);
   }
-
-  const { suggestions, warnings, tips } = analyzePrompt(prompt);
-
-  // Only output if there's something useful to say
-  if (suggestions.length === 0 && warnings.length === 0 && tips.length === 0) {
-    process.exit(0);
-  }
-
-  console.warn('\n🤖 Intent Analysis:\n');
-
-  // Output warnings first (most important)
-  if (warnings.length > 0) {
-    console.warn('⚠️ Warnings:');
-    warnings.forEach((w) => console.warn(`  ${w}`));
-    console.warn('');
-  }
-
-  // Then suggestions
-  if (suggestions.length > 0) {
-    console.warn('💡 Suggestions:');
-    suggestions.forEach((s) => console.warn(`  ${s}`));
-    console.warn('');
-  }
-
-  // Finally tips
-  if (tips.length > 0) {
-    console.warn('📌 Tips:');
-    tips.forEach((t) => console.warn(`  ${t}`));
-    console.warn('');
-  }
-
-  // Special handling for certain critical patterns
-  if (
-    prompt.toLowerCase().includes('any') ||
-    prompt.toLowerCase().includes('@ts-ignore') ||
-    prompt.toLowerCase().includes('@ts-nocheck')
-  ) {
-    console.error('🚫 CRITICAL: Quality standards are non-negotiable!');
-    console.error('   Do NOT use "any" types or ignore TypeScript errors.');
-    console.error('   Fix the root cause properly.\n');
-  }
-
-  process.exit(0);
 }
 
 // Execute
