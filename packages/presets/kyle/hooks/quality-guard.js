@@ -71,6 +71,13 @@ const FILE_SPECIFIC_RULES = {
   ]
 };
 
+/**
+ * Check file content for quality violations and warnings
+ * @param {string} content - The file content to check
+ * @param {string} filePath - The path to the file being checked
+ * @returns {{violations: Array<{rule: string, line?: number, matched?: string}>, warnings: Array<{rule: string, line?: number, matched?: string}>}}
+ *          Object containing arrays of violations and warnings found
+ */
 function checkContent(content, filePath) {
   const violations = [];
   const warnings = [];
@@ -125,11 +132,14 @@ function main() {
       // Silent skip for non-file operations
       process.exit(EXIT_CODES.SUCCESS);
     }
-    
+
     // Check content size limits
+    let contentToCheck = content;
     if (content.length > FILE_LIMITS.MAX_CONTENT_LENGTH) {
-      console.warn(`⚠️ File too large (${content.length} chars), checking first ${FILE_LIMITS.MAX_CONTENT_LENGTH} characters only`);
-      content = content.substring(0, FILE_LIMITS.MAX_CONTENT_LENGTH);
+      console.warn(
+        `⚠️ File too large (${content.length} chars), checking first ${FILE_LIMITS.MAX_CONTENT_LENGTH} characters only`
+      );
+      contentToCheck = content.substring(0, FILE_LIMITS.MAX_CONTENT_LENGTH);
     }
 
     // Only check code files
@@ -141,7 +151,7 @@ function main() {
     // Log check start
     process.stderr.write(`\n🔍 Quality Guard checking ${path.basename(filePath)}...\n`);
 
-    const { violations, warnings } = checkContent(content, filePath);
+    const { violations, warnings } = checkContent(contentToCheck, filePath);
 
     // Output warnings
     if (warnings.length > 0) {
@@ -170,16 +180,49 @@ function main() {
 
     process.exit(0);
   } catch (error) {
-    const errorType = error.message.includes('timeout') ? ERROR_TYPES.TIMEOUT : ERROR_TYPES.UNKNOWN;
-    console.error(`❌ Quality Guard error [${errorType}]:`, error.message);
-    
+    // Categorize errors for better debugging
+    let errorType = ERROR_TYPES.UNKNOWN;
+    let errorMessage = error.message;
+    let suggestion = '';
+
+    if (error.message && error.message.includes('timeout')) {
+      errorType = ERROR_TYPES.TIMEOUT;
+      suggestion = 'Consider optimizing file size or increasing timeout';
+    } else if (error.code === 'ENOENT') {
+      errorType = ERROR_TYPES.PARSE;
+      errorMessage = `File not found: ${error.path || error.message}`;
+      suggestion = 'Check if the file path is correct';
+    } else if (error.code === 'EACCES') {
+      errorType = ERROR_TYPES.PARSE;
+      errorMessage = `Permission denied: ${error.path || error.message}`;
+      suggestion = 'Check file permissions';
+    } else if (error instanceof SyntaxError) {
+      errorType = ERROR_TYPES.PARSE;
+      errorMessage = `Invalid JSON in stdin: ${error.message}`;
+      suggestion = 'Ensure the input is valid JSON';
+    } else if (error instanceof TypeError) {
+      errorType = ERROR_TYPES.PARSE;
+      errorMessage = `Type error in processing: ${error.message}`;
+      suggestion = 'Check the data structure being processed';
+    }
+
+    console.error(`❌ Quality Guard error [${errorType}]: ${errorMessage}`);
+    if (suggestion) {
+      console.error(`💡 ${suggestion}`);
+    }
+
+    // Log stack trace for unknown errors to help debugging
+    if (errorType === ERROR_TYPES.UNKNOWN && error.stack) {
+      console.error('Stack trace:', error.stack);
+    }
+
     // Exit based on error type
     if (errorType === ERROR_TYPES.TIMEOUT) {
-      console.error('💡 Consider optimizing file size or increasing timeout');
       process.exit(EXIT_CODES.TIMEOUT);
     }
-    
+
     // Allow operation to continue on unknown errors to avoid blocking development
+    console.warn('⚠️  Allowing operation to continue despite error');
     process.exit(EXIT_CODES.SUCCESS);
   }
 }

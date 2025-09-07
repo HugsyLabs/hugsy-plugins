@@ -86,6 +86,14 @@ const DUPLICATION_KEYWORDS = {
   'edit config': 'config editor'
 };
 
+/**
+ * Check file for architecture violations and potential duplication issues
+ * @param {string} filePath - The path to the file being checked
+ * @param {string} content - The file content to analyze
+ * @param {string} prompt - The user's prompt that triggered this check
+ * @returns {{violations: Array<{rule: string, suggestion?: string}>, warnings: Array<{rule: string, suggestion?: string}>}}
+ *          Object containing arrays of architecture violations and warnings
+ */
 function checkArchitecture(filePath, content, prompt) {
   const violations = [];
   const warnings = [];
@@ -125,16 +133,16 @@ function checkArchitecture(filePath, content, prompt) {
   // 2. Check for duplicate implementation of existing features
   // Use case-insensitive search for prompts but preserve original case for content analysis
   const lowerPrompt = (prompt || '').toLowerCase();
-  
+
   // Detect by keywords
   for (const [keyword, feature] of Object.entries(DUPLICATION_KEYWORDS)) {
     // Check prompt case-insensitively
     const keywordInPrompt = lowerPrompt.includes(keyword.toLowerCase());
-    
+
     // Check content more carefully - look for actual patterns, not just keywords
     const keywordPattern = new RegExp(`\b${keyword.replace(/\s+/g, '\\s*')}\b`, 'i');
     const keywordInContent = keywordPattern.test(content);
-    
+
     if (keywordInPrompt || keywordInContent) {
       const existing = EXISTING_FEATURES[feature];
       if (existing && !filePath.includes(existing.location)) {
@@ -242,7 +250,7 @@ function main() {
   } catch (error) {
     const errorType = error.message.includes('timeout') ? ERROR_TYPES.TIMEOUT : ERROR_TYPES.UNKNOWN;
     console.error(`❌ Architecture Check error [${errorType}]:`, error.message);
-    
+
     // Allow operation to continue on error to avoid blocking development
     process.exit(EXIT_CODES.SUCCESS);
   }

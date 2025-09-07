@@ -26,7 +26,7 @@ A personalized Hugsy preset with strict quality enforcement and architecture pro
 ## Installation
 
 ```bash
-pnpm add @hugsy/preset-kyle
+pnpm add @hugsylabs/preset-kyle
 ```
 
 ## Usage
@@ -46,6 +46,24 @@ Add to your `.clauderc` or `claude.config.json`:
   "preset": "kyle"
 }
 ```
+
+## Implementation Language Choice
+
+### Why JavaScript Instead of TypeScript?
+
+While this preset strongly enforces TypeScript best practices in user code, the hooks themselves are implemented in JavaScript for several important reasons:
+
+1. **Zero Build Step**: Hooks run directly via Node.js without requiring compilation, ensuring instant execution and no build-time overhead
+
+2. **Maximum Compatibility**: Works across all Node.js environments without TypeScript toolchain dependencies
+
+3. **Hook Performance**: Direct JavaScript execution is faster for hook operations that need sub-second response times
+
+4. **Simplified Distribution**: No need for source maps, type definitions, or build artifacts - just executable code
+
+5. **Runtime Flexibility**: Can dynamically adapt to different project structures without compile-time constraints
+
+The irony is intentional: we use a dynamic language to enforce static typing because the enforcement layer needs to be as lightweight and universal as possible. Think of it as using a flexible scripting layer to enforce rigid code standards - the enforcer doesn't need the same constraints as the enforced.
 
 ## Hooks
 

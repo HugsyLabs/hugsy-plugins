@@ -1,5 +1,5 @@
 /**
- * @hugsy/preset-kyle
+ * @hugsylabs/preset-kyle
  * Kyle's personalized preset with strict quality enforcement and architecture protection
  */
 

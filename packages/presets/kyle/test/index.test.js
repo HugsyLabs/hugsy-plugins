@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import preset from '../index.js';
 
-describe('@hugsy/preset-kyle', () => {
+describe('@hugsylabs/preset-kyle', () => {
   it('should export preset with correct name', () => {
     expect(preset.name).toBe('preset-kyle');
   });
